@@ -1,0 +1,115 @@
+.banner-atas {
+    /*-fx-background-image: url('banner_kecil.png');
+    -fx-background-repeat: stretch;
+    */
+    -fx-background-color: #63D471;
+}
+
+.pane-standard {
+    -fx-background-color: black;
+}
+
+.pane-standard:hover {
+    -fx-background-color: red;
+    -fx-cursor: hand;
+}
+
+.main-panel {
+    -fx-background-color: #63D471;
+    -fx-tab-max-height: 0;
+}
+.main-panel .tab-header-area {
+    visibility: hidden;
+}
+
+.sub-panel {
+    -fx-background-color: rgb(44,62,80);
+    -fx-tab-max-height: 0;
+}
+.sub-panel.tab-header-area {
+    visibility: hidden;
+    -fx-background-color: rgb(44,62,80);
+}
+
+.main-menu-strip {
+    -fx-background-color: rgb(44,62,80);
+}
+
+.main-menu-button {
+    -fx-background-color: rgb(44,62,80);
+}
+.main-menu-button:hover {
+    -fx-cursor: hand;
+    -fx-background-color: rgb(78, 110, 141);
+    -fx-border-color: rgb(210,210,210);
+}
+
+.side-sub-menu {
+    /*-fx-background-color: rgb(54, 62, 70);*/
+    -fx-background-color: rgb(44,62,80);
+    -fx-border-width: 0 1px 0 0;
+    -fx-border-color: #3F5973;
+}
+.side-sub-menu-button {
+    -fx-background-color: rgb(44,62,80);
+    -fx-text-fill: #e5e5e5;
+    -fx-alignment: CENTER_LEFT;
+}
+.side-sub-menu-button:hover {
+    -fx-background-color: #2AB1B6;
+    -fx-background-radius: 0;
+    -fx-text-fill: white;
+    -fx-border-color: #00FFEC;
+    -fx-border-width: 0 5px 0 0;
+    -fx-cursor: hand;
+}
+
+.laborat-main-panel {
+    -fx-background-color: rgb(44,62,80);
+    -fx-effect: innershadow(three-pass-box,#161D27,10,0,0,5);
+}
+
+.start-panel {
+    /*-fx-background-color: rgb(189,195,199);*/
+    -fx-background-image: url('tanaman_tebu.jpg');
+    -fx-background-repeat: stretch;
+    -fx-background-size: cover;
+}
+
+.main-menu-panel-laborat {
+    -fx-background-color: rgb(44,62,80);
+}
+
+/*
+.main-menu-panel:hover {
+    -fx-background-color: rgb(146,146,146);
+    -fx-cursor: hand;
+}
+*/
+
+.login-panel {
+    -fx-background-color: rgb(219,219,219);
+}
+
+.jfx-combo-box {
+    -fx-prompt-text-fill: #cbcbcb;
+    -fx-font-family : "Open Sans";
+    -fx-text-fill: #e5e5e5;
+    -jfx-focus-color : transparent;
+}
+.jfx-combo-box > .list-cell .text {
+    -fx-fill: white;
+    -fx-font-family : "Open Sans";
+    -fx-font-weight : bold;
+    -fx-font-size : 14;
+}
+
+.txtFieldUmum {
+    -fx-text-fill: white;
+    -fx-font-family : "Open Sans";
+    -fx-font-size : 14;
+    -fx-prompt-text-fill: white;
+}
+.txtFieldUmum .input-line {
+    -fx-background-color: white;
+}

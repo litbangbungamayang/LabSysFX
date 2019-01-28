@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="619.0" prefWidth="1366.0" styleClass="laborat-main-panel" stylesheets="@../assets/main_interface.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="id.buma.labsysfx.controller.AnalisaKemasakanController">
+   <top>
+      <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Laboratorium Analisa Kemasakan" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font name="Open Sans" size="20.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </top>
+   <left>
+      <VBox prefHeight="500.0" prefWidth="250.0" styleClass="side-sub-menu" stylesheets="@../assets/main_interface.css" BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton fx:id="btnSubMenuDashboard" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Dashboard" textFill="WHITE">
+               <font>
+                  <Font name="Open Sans" size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnSubMenuInputDataAnalisa" layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Input Data Analisa" textFill="WHITE">
+               <font>
+                  <Font name="Open Sans" size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnSubMenuLaporanAnalisa" layoutX="10.0" layoutY="60.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Laporan Analisa Kemasakan" textFill="WHITE">
+               <font>
+                  <Font name="Open Sans" size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnBackMainMenu" layoutX="10.0" layoutY="110.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Kembali ke Menu Utama" textFill="WHITE">
+               <font>
+                  <Font name="Open Sans" size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </JFXButton>
+         </children></VBox>
+   </left>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="sub-panel" stylesheets="@../assets/main_interface.css" BorderPane.alignment="CENTER">
+         <children>
+            <TabPane fx:id="containerAnkem" prefWidth="200.0" styleClass="sub-panel" stylesheets="@../assets/main_interface.css" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+              <tabs>
+                <Tab fx:id="pageDashboard" text="Untitled Tab 1">
+                     <content>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Dashboard" />
+                     </content></Tab>
+                  <Tab fx:id="pageInputDataAnalisa" text="Untitled Tab">
+                     <content>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="489.0" minHeight="10.0" prefHeight="489.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="181.0" minHeight="10.0" prefHeight="71.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox prefHeight="366.0" prefWidth="363.0">
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
+                                       </HBox.margin>
+                                       <children>
+                                          <AnchorPane prefHeight="30.0" prefWidth="288.0">
+                                             <children>
+                                                <Label layoutY="4.0" prefHeight="30.0" prefWidth="81.0" text="Jenis Analisa" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Open Sans" size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <JFXComboBox fx:id="cbxJenisAnalisa" focusColor="WHITE" layoutX="109.0" layoutY="3.0" prefHeight="30.0" prefWidth="253.0" promptText="(pilih jenis analisa)" styleClass="jfx-combo-box" stylesheets="@../assets/main_interface.css" unFocusColor="WHITE" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" />
+                                             </padding>
+                                          </AnchorPane>
+                                          <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="288.0">
+                                             <children>
+                                                <Label layoutY="12.0" prefHeight="30.0" prefWidth="81.0" text="Kode Petak" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Open Sans" size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <JFXTextField fx:id="txtKodePetak" layoutX="109.0" layoutY="12.0" prefHeight="26.0" prefWidth="253.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" />
+                                             </padding>
+                                          </AnchorPane>
+                                          <AnchorPane layoutX="10.0" layoutY="54.0" prefHeight="30.0" prefWidth="288.0">
+                                             <children>
+                                                <Label layoutY="14.0" prefHeight="30.0" prefWidth="81.0" text="Ronde" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Open Sans" size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <JFXTextField fx:id="txtRonde" layoutX="109.0" layoutY="12.0" prefHeight="26.0" prefWidth="253.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" />
+                                             </padding>
+                                          </AnchorPane>
+                                          <AnchorPane layoutX="10.0" layoutY="106.0" prefHeight="30.0" prefWidth="288.0">
+                                             <children>
+                                                <Label layoutY="14.0" prefHeight="30.0" prefWidth="81.0" text="Sampel" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="Open Sans" size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <JFXTextField fx:id="txtSampel" layoutX="109.0" layoutY="12.0" prefHeight="26.0" prefWidth="253.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" />
+                                             </padding>
+                                          </AnchorPane>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </HBox>
+                           </children>
+                        </GridPane>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
