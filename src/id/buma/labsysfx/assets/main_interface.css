@@ -51,9 +51,13 @@
     -fx-border-color: #3F5973;
 }
 .side-sub-menu-button {
-    -fx-background-color: rgb(44,62,80);
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 14;
+    -fx-background-color: rgb(24,42,60);
     -fx-text-fill: #e5e5e5;
     -fx-alignment: CENTER_LEFT;
+    -fx-border-width: 0 5px 0 0;
+    -fx-border-color: #bbbbbb;
 }
 .side-sub-menu-button:hover {
     -fx-background-color: #2AB1B6;
@@ -62,6 +66,26 @@
     -fx-border-color: #00FFEC;
     -fx-border-width: 0 5px 0 0;
     -fx-cursor: hand;
+}
+
+.standard-button {
+    -fx-background-color: #63707c;
+    -fx-text-fill: #e5e5e5;
+    -fx-text-alignment: center;
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 13;
+}
+.standard-button:hover {
+    -fx-background-color: #7c7c7c;
+    -fx-cursor: hand;
+}
+
+.icon-button {
+    -fx-background-color: transparent;
+}
+.icon-button:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #777777;
 }
 
 .laborat-main-panel {
@@ -80,13 +104,6 @@
     -fx-background-color: rgb(44,62,80);
 }
 
-/*
-.main-menu-panel:hover {
-    -fx-background-color: rgb(146,146,146);
-    -fx-cursor: hand;
-}
-*/
-
 .login-panel {
     -fx-background-color: rgb(219,219,219);
 }
@@ -97,10 +114,9 @@
     -fx-text-fill: #e5e5e5;
     -jfx-focus-color : transparent;
 }
-.jfx-combo-box > .list-cell .text {
+.jfx-combo-box > .list-cell .text { 
     -fx-fill: white;
     -fx-font-family : "Open Sans";
-    -fx-font-weight : bold;
     -fx-font-size : 14;
 }
 
@@ -108,8 +124,18 @@
     -fx-text-fill: white;
     -fx-font-family : "Open Sans";
     -fx-font-size : 14;
-    -fx-prompt-text-fill: white;
+    -fx-prompt-text-fill: #cbcbcb;
 }
 .txtFieldUmum .input-line {
     -fx-background-color: white;
+}
+.txtFieldUmum:error > .input-line {
+    -fx-background-color: red;
+}
+.txtFieldUmum:focused{
+    -fx-prompt-text-fill: transparent;
+}
+.txtFieldUmum .error-label {
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
 }
