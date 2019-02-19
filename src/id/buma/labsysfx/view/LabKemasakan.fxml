@@ -425,7 +425,34 @@
                                                 <Font name="Open Sans Bold" size="12.0" />
                                              </font>
                                              <content>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="sub-panel" stylesheets="@../assets/main_interface.css" />
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="sub-panel" stylesheets="@../assets/main_interface.css">
+                                                   <children>
+                                                      <VBox layoutX="14.0" layoutY="14.0" prefHeight="270.0" prefWidth="1000.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                         <children>
+                                                            <TableView fx:id="tvHasil" prefHeight="200.0" prefWidth="200.0">
+                                                              <columns>
+                                                                <TableColumn fx:id="tcNoSampel" editable="false" prefWidth="30.0" sortable="false" text="No." />
+                                                                <TableColumn fx:id="tcKodePetak" editable="false" prefWidth="85.0" sortable="false" text="Kode Petak" />
+                                                                  <TableColumn fx:id="tcBxA" prefWidth="50.0" text="Brix A" />
+                                                                  <TableColumn fx:id="tcBxT" editable="false" prefWidth="50.0" sortable="false" text="Brix T" />
+                                                                  <TableColumn fx:id="tcBxB" editable="false" prefWidth="50.0" sortable="false" text="Brix B" />
+                                                                  <TableColumn fx:id="tcBxC" editable="false" prefWidth="50.0" sortable="false" text="Brix C" />
+                                                                  <TableColumn fx:id="tcPolA" editable="false" prefWidth="50.0" sortable="false" text="Pol A" />
+                                                                  <TableColumn fx:id="tcPolT" editable="false" prefWidth="50.0" sortable="false" text="Pol T" />
+                                                                  <TableColumn fx:id="tcPolB" editable="false" prefWidth="50.0" sortable="false" text="Pol B" />
+                                                                  <TableColumn fx:id="tcPolC" editable="false" prefWidth="50.0" sortable="false" text="Pol C" />
+                                                                  <TableColumn fx:id="tcRendA" editable="false" prefWidth="50.0" sortable="false" text="Rend A" />
+                                                                  <TableColumn fx:id="tcRendT" editable="false" prefWidth="50.0" sortable="false" text="Rend T" />
+                                                                  <TableColumn fx:id="tcRendB" editable="false" prefWidth="50.0" sortable="false" text="Rend B" />
+                                                                  <TableColumn fx:id="tcRendC" editable="false" prefWidth="50.0" sortable="false" text="Rend C" />
+                                                                  <TableColumn fx:id="tcFK" editable="false" prefWidth="50.0" sortable="false" text="FK" />
+                                                                  <TableColumn fx:id="tcKP" editable="false" prefWidth="50.0" sortable="false" text="KP" />
+                                                                  <TableColumn fx:id="tcKDT" editable="false" prefWidth="50.0" sortable="false" text="KDT" />
+                                                              </columns>
+                                                            </TableView>
+                                                         </children>
+                                                      </VBox>
+                                                   </children></AnchorPane>
                                              </content>
                                           </TitledPane>
                                       </panes>

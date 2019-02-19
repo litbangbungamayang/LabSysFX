@@ -101,6 +101,10 @@ public class AnalisaTebu {
         this.polBacaTengah = polBacaTengah;
         this.polBacaBawah = polBacaBawah;
         this.polBacaCampur = polBacaCampur;
+        this.polAtas = polAtas;
+        this.polTengah = polTengah;
+        this.polBawah = polBawah;
+        this.polCampur = polCampur;
         this.faktorPerah = faktorPerah;
         this.hkAtas = hkAtas;
         this.hkTengah = hkTengah;

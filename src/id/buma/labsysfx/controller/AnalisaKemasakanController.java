@@ -14,10 +14,13 @@ import com.jfoenix.validation.IntegerValidator;
 import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import id.buma.labsysfx.MainApp;
+import id.buma.labsysfx.model.AnalisaTebu;
 import id.buma.labsysfx.model.FisikTebu;
 import java.net.URL;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -127,9 +130,47 @@ public class AnalisaKemasakanController implements Initializable {
     @FXML 
     private TableView<FisikTebu> tvFisik;
     @FXML
+    private TableView<AnalisaTebu> tvHasil;
+    @FXML
+    private TableColumn tcNoSampel;
+    @FXML
+    private TableColumn<AnalisaTebu, String> tcKodePetak;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcBxA;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcBxT;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcBxB;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcBxC;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcPolA;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcPolT;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcPolB;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcPolC;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcRendA;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcRendT;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcRendB;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcRendC;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcFK;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcKP;
+    @FXML
+    private TableColumn<AnalisaTebu, Double> tcKDT;
+    @FXML
     private JFXDatePicker dtpTglAnalisa;
     
     final ObservableList<FisikTebu> dataFisik = FXCollections.observableArrayList();
+    
+    final ObservableList<AnalisaTebu> dataAnalisa = FXCollections.observableArrayList();
     
     private MainApp mainApp;
     
@@ -158,6 +199,16 @@ public class AnalisaKemasakanController implements Initializable {
         Double hasil;
         if (angka > 10){
             hasil = angka/100;
+        } else {
+            return angka;
+        }
+        return hasil;
+    }
+    
+    public Double koreksiAngkaAnalisa(Double angka){
+        Double hasil;
+        if (angka > 100){
+            hasil = angka/10;
         } else {
             return angka;
         }
@@ -193,37 +244,67 @@ public class AnalisaKemasakanController implements Initializable {
         txtBobotTebuAtas.getValidators().add(validatorWajib);
         txtBobotTebuAtas.getValidators().add(validatorDesimal);
         txtBobotTebuAtas.focusedProperty().addListener((observable) -> {
-            txtBobotTebuAtas.validate();
+            if (!txtBobotTebuAtas.getText().isEmpty()){
+                if (txtBobotTebuAtas.validate()){
+                    Double angka = Double.parseDouble(txtBobotTebuAtas.getText());
+                    txtBobotTebuAtas.setText(String.valueOf(koreksiDesimal(angka)));
+                }
+            }
         });
         
         txtBobotNiraAtas.getValidators().add(validatorWajib);
         txtBobotNiraAtas.getValidators().add(validatorDesimal);
         txtBobotNiraAtas.focusedProperty().addListener((observable) -> {
-            txtBobotNiraAtas.validate();
+            if (!txtBobotNiraAtas.getText().isEmpty()){
+                if (txtBobotNiraAtas.validate()){
+                    Double angka = Double.parseDouble(txtBobotNiraAtas.getText());
+                    txtBobotNiraAtas.setText(String.valueOf(koreksiDesimal(angka)));
+                }
+            }
         });
         
         txtBobotTebuTengah.getValidators().add(validatorWajib);
         txtBobotTebuTengah.getValidators().add(validatorDesimal);
         txtBobotTebuTengah.focusedProperty().addListener((observable) -> {
-            txtBobotTebuTengah.validate();
+            if (!txtBobotTebuTengah.getText().isEmpty()){
+                if (txtBobotTebuTengah.validate()){
+                    Double angka = Double.parseDouble(txtBobotTebuTengah.getText());
+                    txtBobotTebuTengah.setText(String.valueOf(koreksiDesimal(angka)));
+                }
+            }
         });
         
         txtBobotNiraTengah.getValidators().add(validatorWajib);
         txtBobotNiraTengah.getValidators().add(validatorDesimal);
         txtBobotNiraTengah.focusedProperty().addListener((observable) -> {
-            txtBobotNiraTengah.validate();
+            if (!txtBobotNiraTengah.getText().isEmpty()){
+                if (txtBobotNiraTengah.validate()){
+                    Double angka = Double.parseDouble(txtBobotNiraTengah.getText());
+                    txtBobotNiraTengah.setText(String.valueOf(koreksiDesimal(angka)));
+                }
+            }
         });
         
         txtBobotTebuBawah.getValidators().add(validatorWajib);
         txtBobotTebuBawah.getValidators().add(validatorDesimal);
         txtBobotTebuBawah.focusedProperty().addListener((observable) -> {
-            txtBobotTebuBawah.validate();
+            if (!txtBobotTebuBawah.getText().isEmpty()){
+                if (txtBobotTebuBawah.validate()){
+                    Double angka = Double.parseDouble(txtBobotTebuBawah.getText());
+                    txtBobotTebuBawah.setText(String.valueOf(koreksiDesimal(angka)));
+                }
+            }
         });
         
         txtBobotNiraBawah.getValidators().add(validatorWajib);
         txtBobotNiraBawah.getValidators().add(validatorDesimal);
         txtBobotNiraBawah.focusedProperty().addListener((observable) -> {
-            txtBobotNiraBawah.validate();
+            if (!txtBobotNiraBawah.getText().isEmpty()){
+                if (txtBobotNiraBawah.validate()){
+                    Double angka = Double.parseDouble(txtBobotNiraBawah.getText());
+                    txtBobotNiraBawah.setText(String.valueOf(koreksiDesimal(angka)));
+                }
+            }
         });
         
         txtPenggerek.getValidators().add(validatorWajib);
@@ -235,49 +316,89 @@ public class AnalisaKemasakanController implements Initializable {
         txtBrixAtas.getValidators().add(validatorWajib);
         txtBrixAtas.getValidators().add(validatorDesimal);
         txtBrixAtas.focusedProperty().addListener((observable) -> {
-            txtBrixAtas.validate();
+            if (!txtBrixAtas.getText().isEmpty()){
+                if (txtBrixAtas.validate()){
+                    Double angka = Double.parseDouble(txtBrixAtas.getText());
+                    txtBrixAtas.setText(String.valueOf(koreksiAngkaAnalisa(angka)));
+                }
+            }
         });
         
         txtBrixTengah.getValidators().add(validatorWajib);
         txtBrixTengah.getValidators().add(validatorDesimal);
         txtBrixTengah.focusedProperty().addListener((observable) -> {
-            txtBrixTengah.validate();
+            if (!txtBrixTengah.getText().isEmpty()){
+                if (txtBrixTengah.validate()){
+                    Double angka = Double.parseDouble(txtBrixTengah.getText());
+                    txtBrixTengah.setText(String.valueOf(koreksiAngkaAnalisa(angka)));
+                }
+            }
         });
         
         txtBrixBawah.getValidators().add(validatorWajib);
         txtBrixBawah.getValidators().add(validatorDesimal);
         txtBrixBawah.focusedProperty().addListener((observable) -> {
-            txtBrixBawah.validate();
+            if (!txtBrixBawah.getText().isEmpty()){
+                if (txtBrixBawah.validate()){
+                    Double angka = Double.parseDouble(txtBrixBawah.getText());
+                    txtBrixBawah.setText(String.valueOf(koreksiAngkaAnalisa(angka)));
+                }
+            }
         });
         
         txtBrixCampur.getValidators().add(validatorWajib);
         txtBrixCampur.getValidators().add(validatorDesimal);
         txtBrixCampur.focusedProperty().addListener((observable) -> {
-            txtBrixCampur.validate();
+            if (!txtBrixCampur.getText().isEmpty()){
+                if (txtBrixCampur.validate()){
+                    Double angka = Double.parseDouble(txtBrixCampur.getText());
+                    txtBrixCampur.setText(String.valueOf(koreksiAngkaAnalisa(angka)));
+                }
+            }
         });
         
         txtPolAtas.getValidators().add(validatorWajib);
         txtPolAtas.getValidators().add(validatorDesimal);
         txtPolAtas.focusedProperty().addListener((observable) -> {
-            txtPolAtas.validate();
+            if (!txtPolAtas.getText().isEmpty()){
+                if (txtPolAtas.validate()){
+                    Double angka = Double.parseDouble(txtPolAtas.getText());
+                    txtPolAtas.setText(String.valueOf(koreksiAngkaAnalisa(angka)));
+                }
+            }
         });
         
         txtPolTengah.getValidators().add(validatorWajib);
         txtPolTengah.getValidators().add(validatorDesimal);
         txtPolTengah.focusedProperty().addListener((observable) -> {
-            txtPolTengah.validate();
+            if (!txtPolTengah.getText().isEmpty()){
+                if (txtPolTengah.validate()){
+                    Double angka = Double.parseDouble(txtPolTengah.getText());
+                    txtPolTengah.setText(String.valueOf(koreksiAngkaAnalisa(angka)));
+                }
+            }
         });
         
         txtPolBawah.getValidators().add(validatorWajib);
         txtPolBawah.getValidators().add(validatorDesimal);
         txtPolBawah.focusedProperty().addListener((observable) -> {
-            txtPolBawah.validate();
+            if (!txtPolBawah.getText().isEmpty()){
+                if (txtPolBawah.validate()){
+                    Double angka = Double.parseDouble(txtPolBawah.getText());
+                    txtPolBawah.setText(String.valueOf(koreksiAngkaAnalisa(angka)));
+                }
+            }
         });
         
         txtPolCampur.getValidators().add(validatorWajib);
         txtPolCampur.getValidators().add(validatorDesimal);
         txtPolCampur.focusedProperty().addListener((observable) -> {
-            txtPolCampur.validate();
+            if (!txtPolCampur.getText().isEmpty()){
+                if (txtPolCampur.validate()){
+                    Double angka = Double.parseDouble(txtPolCampur.getText());
+                    txtPolCampur.setText(String.valueOf(koreksiAngkaAnalisa(angka)));
+                }
+            }
         });
         
         txtSuhu.getValidators().add(validatorWajib);
@@ -427,6 +548,25 @@ public class AnalisaKemasakanController implements Initializable {
         tcDiameter.setCellValueFactory(new PropertyValueFactory<>("diameter"));
     }
     
+    public void refreshTabelHasil(){
+        tvHasil.setItems(dataAnalisa);
+        tcNoSampel.setCellFactory(new Callback<TableColumn, TableCell>() {
+            @Override
+            public TableCell call(TableColumn param) {
+                return new TableCell(){
+                    @Override
+                    protected void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty ? null : getIndex() + 1 + " ");
+                    }
+                };
+            }
+        });
+        tcKodePetak.setCellValueFactory(new PropertyValueFactory<>("kodePetak"));
+        tcRendC.setCellValueFactory(new PropertyValueFactory<>("rendCampur"));
+        tcFK.setCellValueFactory(new PropertyValueFactory<>("fk"));
+    }
+    
     public FisikTebu hitungRataRata(){
         Double rataPanjang = 0.00;
         int rataRuas = 0;
@@ -447,6 +587,38 @@ public class AnalisaKemasakanController implements Initializable {
         return rataFisik;
     }
     
+    public Double hitungBJ(Double brixBaca){
+        Double hasil = 0.00;
+        if (brixBaca <= 5.5){
+            hasil = ((0.0215*brixBaca) + 5.4802)/5.5;
+        } else {
+            if (brixBaca <= 10.5){
+                hasil = ((0.01983*brixBaca) + 4.878622)/4.9;
+            } else {
+                if (brixBaca <= 15.5){
+                    hasil = ((0.02052*brixBaca) + 4.871334)/4.9;
+                } else {
+                    if (brixBaca > 15.5){
+                        hasil = ((0.02207*brixBaca) + 4.843238)/4.9;
+                    }
+                }
+            }
+        }
+        return hasil;
+    }
+    
+    public Double hitungPol(Double polBaca, Double bj){
+        Double hasil;
+        hasil = (polBaca * 0.286)/bj;
+        return hasil;
+    }
+    
+    public Double hitungNn(Double pol, Double brix){
+        Double hasil;
+        hasil = pol - 0.4 * (brix - pol);
+        return hasil;
+    }
+    
     public void validasiInput(){
         if (txtBobotTebuAtas.validate() && txtBobotTebuTengah.validate() && txtBobotTebuBawah.validate() &&
                 txtBobotNiraAtas.validate() && txtBobotNiraTengah.validate() && txtBobotNiraBawah.validate() &&
@@ -454,7 +626,98 @@ public class AnalisaKemasakanController implements Initializable {
                 txtPolAtas.validate() && txtPolTengah.validate() && txtPolBawah.validate() && txtPolCampur.validate() &&
                 txtSuhu.validate() && txtKoreksiSuhu.validate() &&
                 dataFisik.size() > 0){
-            System.out.println("Semua OK");
+            Double beratTebuAtas = Double.parseDouble(txtBobotTebuAtas.getText());
+            Double beratTebuTengah = Double.parseDouble(txtBobotTebuTengah.getText());
+            Double beratTebuBawah = Double.parseDouble(txtBobotTebuBawah.getText());
+            Double beratNiraAtas = Double.parseDouble(txtBobotNiraAtas.getText());
+            Double beratNiraTengah = Double.parseDouble(txtBobotNiraTengah.getText());
+            Double beratNiraBawah = Double.parseDouble(txtBobotNiraBawah.getText());
+            Double brixBacaAtas = Double.parseDouble(txtBrixAtas.getText());
+            Double brixBacaTengah = Double.parseDouble(txtBrixTengah.getText());
+            Double brixBacaBawah = Double.parseDouble(txtBrixBawah.getText());
+            Double brixBacaCampur = Double.parseDouble(txtBrixCampur.getText());
+            Double koreksiSuhu = Double.parseDouble(txtKoreksiSuhu.getText());
+            Double brixAtas = brixBacaAtas + koreksiSuhu;
+            Double brixTengah = brixBacaTengah + koreksiSuhu;
+            Double brixBawah = brixBacaBawah + koreksiSuhu;
+            Double brixCampur = brixBacaCampur + koreksiSuhu;
+            Double polBacaAtas = Double.parseDouble(txtPolAtas.getText());
+            Double polBacaTengah = Double.parseDouble(txtPolTengah.getText());
+            Double polBacaBawah = Double.parseDouble(txtPolBawah.getText());
+            Double polBacaCampur = Double.parseDouble(txtPolCampur.getText());
+            Double faktorPerah = (beratNiraAtas + beratNiraTengah + beratNiraBawah) / (beratTebuAtas + beratTebuTengah + beratTebuBawah);
+            Double polAtas = hitungPol(polBacaAtas, hitungBJ(brixAtas));
+            Double polTengah = hitungPol(polBacaTengah, hitungBJ(brixTengah));
+            Double polBawah = hitungPol(polBacaBawah, hitungBJ(brixBawah));
+            Double polCampur = hitungPol(polBacaCampur, hitungBJ(brixCampur));
+            Double nnAtas = hitungNn(polAtas, brixAtas);
+            Double nnTengah = hitungNn(polTengah, brixTengah);
+            Double nnBawah = hitungNn(polBawah, brixBawah);
+            Double nnCampur = hitungNn(polCampur, brixCampur);
+            Double rendAtas = nnAtas * faktorPerah;
+            Double rendTengah = nnTengah * faktorPerah;
+            Double rendBawah = nnBawah * faktorPerah;
+            Double rendCampur = nnCampur * faktorPerah;
+            Double fk = (rendBawah - rendAtas) / rendBawah * 100;
+            java.sql.Date tglAnalisa = java.sql.Date.valueOf(dtpTglAnalisa.getValue());
+            java.sql.Date tglPosting = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            /*
+            Data untuk KP dan KDT sementara dummy sambil nunggu kesiapan koneksi data
+            */
+            Double kp = 120.00;
+            Double kdt = 100.00;
+            /*
+            ******
+            */
+            AnalisaTebu at = new AnalisaTebu("kode001",
+                    1, //idUser
+                    1, //jenisAnalisa
+                    1, //ronde
+                    1, //noSampel
+                    tglAnalisa, //tglAnalisa
+                    tglPosting, //tglPosting
+                    beratTebuAtas, //beratTebuAtas
+                    beratTebuTengah, //beratTebuTengah
+                    beratTebuBawah, //beratTebuBawah
+                    beratNiraAtas, //beratNiraAtas
+                    beratNiraTengah, //beratNiraTengah
+                    beratNiraBawah, //beratNiraBawah
+                    Double.parseDouble(txtPenggerek.getText()), //penggerek
+                    brixBacaAtas, //brixBacaAtas
+                    brixBacaTengah, //brixBacaTengah
+                    brixBacaBawah, //brixBacaBawah
+                    brixBacaCampur, //brixBacaCampur
+                    brixAtas, //brixAtas
+                    brixTengah, //brixTengah
+                    brixBawah, //brix Bawah
+                    brixCampur, //brix Campur
+                    polBacaAtas, //polBacaAtas
+                    polBacaTengah, //polBacaTengah
+                    polBacaBawah, //polBacaBawah
+                    polBacaCampur, //polBacaCampur
+                    polAtas, //pol Atas
+                    polTengah, //pol Tengah
+                    polBawah, //pol bawah
+                    polCampur, //pol campur
+                    faktorPerah, //faktorPerah
+                    (polAtas/brixAtas)*100, //hkAtas
+                    (polTengah/brixTengah)*100, //hkTengah
+                    (polBawah/brixBawah)*100, //hkBawah
+                    (polCampur/brixCampur)*100, //hkCampur
+                    nnAtas, //NN Atas
+                    nnTengah, //NN Tengah
+                    nnBawah, //NN Bawah
+                    nnCampur, //NN Campur
+                    rendAtas, //rend atas
+                    rendTengah, //rend tengah
+                    rendBawah, //rend bawah
+                    rendCampur, //rend campur
+                    fk, // FK
+                    kp, // KP
+                    kdt // KDT
+            );
+            dataAnalisa.add(at);
+            refreshTabelHasil();
         } else {
             if (dataFisik.isEmpty()){
                 alert.showErrorAlert("Data pengukuran tebu harus ada!");
