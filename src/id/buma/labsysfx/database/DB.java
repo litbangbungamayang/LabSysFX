@@ -5,6 +5,7 @@
  */
 package id.buma.labsysfx.database;
 
+import id.buma.labsysfx.controller.ErrorMessages;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,18 +20,29 @@ import java.util.logging.Logger;
  */
 
 public class DB {
-   private Connection conn;
+   private static Connection conn;
+   private static ErrorMessages errMsg;
     
-    public Connection getConnSimpg(){
+    public static Connection getConn(){
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            String simpg_lokal = "jdbc:mysql://localhost:3306/simpg?user=root&password=adminBUMA789";
-            String simpg_kandir = "jdbc:mysql://192.168.208.98:3306/simpg?user=admintr&password=ptpn7@jaya&useSSL=false";
-            String simpg_buma= "jdbc:mysql://192.168.39.150:3306/simpg?user=root&password=tiptpn7&useSSL=false";
-            conn = DriverManager.getConnection(simpg_buma);
+            String server_lokal = "jdbc:mysql://localhost:3306/db_litbang?user=root&password=adminBUMA789";
+            String server_kandir = "jdbc:mysql://192.168.208.98:3306/db_litbang?user=admintr&password=ptpn7@jaya&useSSL=false";
+            String server_buma = "jdbc:mysql://192.168.39.150:3306/db_litbang?user=root&password=tiptpn7&useSSL=false";
+            conn = DriverManager.getConnection(server_lokal);
         } catch (ClassNotFoundException | SQLException ex) {
+            errMsg.showErrorAlert("Database tidak terkoneksi! " + ex.toString());
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return conn;
-    } 
+    }
+    
+    public static boolean isConnect(){
+        try {
+            return getConn() != null;
+        } catch (Exception ex) {
+            errMsg.showErrorAlert(ex.getMessage());
+        }
+        return false;
+    }
 }

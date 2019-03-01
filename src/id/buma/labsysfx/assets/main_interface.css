@@ -145,4 +145,6 @@
 
 .tableUmum .table-column {
     -fx-alignment: BOTTOM_RIGHT;
+    -fx-font-size : 11;
+    -fx-font-family : "Open Sans";
 }

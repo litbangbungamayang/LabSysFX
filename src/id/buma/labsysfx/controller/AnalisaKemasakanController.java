@@ -14,14 +14,22 @@ import com.jfoenix.validation.IntegerValidator;
 import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import id.buma.labsysfx.MainApp;
+import id.buma.labsysfx.dao.AnalisaTebuDAOSQL;
+import id.buma.labsysfx.dao.PetakKebunDAOSQL;
+import id.buma.labsysfx.dao.VarietasDAOSQL;
 import id.buma.labsysfx.model.AnalisaTebu;
 import id.buma.labsysfx.model.FisikTebu;
+import id.buma.labsysfx.model.PetakKebun;
 import java.net.URL;
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,6 +43,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 /**
@@ -167,14 +176,42 @@ public class AnalisaKemasakanController implements Initializable {
     private TableColumn<AnalisaTebu, Double> tcKDT;
     @FXML
     private JFXDatePicker dtpTglAnalisa;
+    @FXML
+    private JFXButton btnTambahSampel;
+    @FXML
+    private Text txtNoSampel;
+    @FXML
+    private Text txtKodePetak;
+    @FXML
+    private Text txtLuasPetak;
+    @FXML
+    private Text txtVarietas;
+    @FXML
+    private Text txtLabelRonde;
+    @FXML
+    private JFXButton btnBatal;
     
     final ObservableList<FisikTebu> dataFisik = FXCollections.observableArrayList();
     
     final ObservableList<AnalisaTebu> dataAnalisa = FXCollections.observableArrayList();
     
+    ObservableList<PetakKebun> listPetakKebun = FXCollections.observableArrayList();
+    
+    List<String> listPopUpPetak = new ArrayList<>();
+    
+    private PetakKebun petakKebun;
+    
+    private int jenisAnalisa = -1;
+    
     private MainApp mainApp;
     
     private MainScreenController msc;
+    
+    private final PetakKebunDAOSQL petakKebunDao = new PetakKebunDAOSQL();
+    
+    private final VarietasDAOSQL varietasDao = new VarietasDAOSQL();
+    
+    private final AnalisaTebuDAOSQL analisaDao = new AnalisaTebuDAOSQL();
     
     private final ErrorMessages alert = new ErrorMessages();
     
@@ -184,7 +221,7 @@ public class AnalisaKemasakanController implements Initializable {
     }
     
     public AnalisaKemasakanController(){
-        
+        petakKebun = null;
     }
     
     public void setMainScreenController(MainScreenController msc){
@@ -208,6 +245,16 @@ public class AnalisaKemasakanController implements Initializable {
     public Double koreksiAngkaAnalisa(Double angka){
         Double hasil;
         if (angka > 100){
+            hasil = angka/10;
+        } else {
+            return angka;
+        }
+        return hasil;
+    }
+    
+    public Double koreksiAngkaDiameter(Double angka){
+        Double hasil;
+        if (angka > 10){
             hasil = angka/10;
         } else {
             return angka;
@@ -433,7 +480,7 @@ public class AnalisaKemasakanController implements Initializable {
             if (!txtInputDiameter.getText().isEmpty()){
                 if (txtInputDiameter.validate()){
                     Double angka = Double.parseDouble(txtInputDiameter.getText());
-                    txtInputDiameter.setText(String.valueOf(koreksiDesimal(angka)));
+                    txtInputDiameter.setText(String.valueOf(koreksiAngkaDiameter(angka)));
                 }
             }
         });
@@ -446,10 +493,20 @@ public class AnalisaKemasakanController implements Initializable {
     }
     
     public void autoCompleteGroup(){
+        listPetakKebun = petakKebunDao.getAllPetak();
+        for (PetakKebun listPetakKebunPetak : listPetakKebun) {
+            listPopUpPetak.add(
+                    listPetakKebunPetak.getRayon() + " " +
+                    listPetakKebunPetak.getNamaKebun() + " " + 
+                    listPetakKebunPetak.getNoPetak() + " " + String.valueOf(listPetakKebunPetak.getLuasPetak() + 
+                            " Ha " + listPetakKebunPetak.getMasaTanam() + " " +
+                    listPetakKebunPetak.getKategori()
+                            ));
+        }
         JFXAutoCompletePopup<String> autoCompleteJenis = new JFXAutoCompletePopup<>();
         JFXAutoCompletePopup<String> autoCompletePetak = new JFXAutoCompletePopup<>();
         autoCompleteJenis.getSuggestions().addAll("Analisa Rutin", "Analisa Tebu Bakar", "Analisa Tebu Percobaan");
-        autoCompletePetak.getSuggestions().addAll("Rayon I Petak 056", "Rayon II Petak 129", "SARENGAT D.");// todo: tambahkan kode generate kode petak disini
+        autoCompletePetak.getSuggestions().addAll(listPopUpPetak);// todo: tambahkan kode generate kode petak disini
         autoCompleteJenis.cellLimitProperty().setValue(3);
         autoCompletePetak.cellLimitProperty().setValue(10);
         txtJenisAnalisa.textProperty().addListener((observable) -> {
@@ -461,6 +518,7 @@ public class AnalisaKemasakanController implements Initializable {
         });
         autoCompleteJenis.setSelectionHandler((evt) -> {
             txtJenisAnalisa.setText(evt.getObject());
+            jenisAnalisa = autoCompleteJenis.getSuggestions().indexOf(txtJenisAnalisa.getText());
         });
         txtPetak.textProperty().addListener((observable) -> {
             if (!txtPetak.getText().isEmpty()){
@@ -472,16 +530,26 @@ public class AnalisaKemasakanController implements Initializable {
         });
         autoCompletePetak.setSelectionHandler((evt) -> {
             txtPetak.setText(evt.getObject());
+            int indexnya = autoCompletePetak.getSuggestions().indexOf(txtPetak.getText());
+            petakKebun = listPetakKebun.get(indexnya);
+            txtRonde.setText(String.valueOf(analisaDao.getRonde(petakKebun.getKodePetak())));
             autoCompletePetak.hide();
         });
+        
     }
     
-    public void resetField(){
+    public void resetDataAwal(){
         txtJenisAnalisa.clear();
         txtPetak.clear();
         txtRonde.clear();
         txtPetak.getValidators().clear();
         txtRonde.getValidators().clear();
+        petakKebun = null;
+        jenisAnalisa = -1;
+        listPopUpPetak.clear();
+    }
+    
+    public void resetField(){
         
         txtBobotNiraAtas.clear();
         txtBobotNiraTengah.clear();
@@ -563,8 +631,21 @@ public class AnalisaKemasakanController implements Initializable {
             }
         });
         tcKodePetak.setCellValueFactory(new PropertyValueFactory<>("kodePetak"));
-        tcRendC.setCellValueFactory(new PropertyValueFactory<>("rendCampur"));
+        tcBxA.setCellValueFactory(new PropertyValueFactory<>("brixAtas"));
+        tcBxB.setCellValueFactory(new PropertyValueFactory<>("brixBawah"));
+        tcBxT.setCellValueFactory(new PropertyValueFactory<>("brixTengah"));
+        tcBxC.setCellValueFactory(new PropertyValueFactory<>("brixCampur"));
+        tcPolA.setCellValueFactory(new PropertyValueFactory<>("polAtas"));
+        tcPolT.setCellValueFactory(new PropertyValueFactory<>("polTengah"));
+        tcPolB.setCellValueFactory(new PropertyValueFactory<>("polBawah"));
+        tcPolC.setCellValueFactory(new PropertyValueFactory<>("polCampur"));
         tcFK.setCellValueFactory(new PropertyValueFactory<>("fk"));
+        tcKDT.setCellValueFactory(new PropertyValueFactory<>("kdt"));
+        tcKP.setCellValueFactory(new PropertyValueFactory<>("kp"));
+        tcRendA.setCellValueFactory(new PropertyValueFactory<>("rendAtas"));
+        tcRendT.setCellValueFactory(new PropertyValueFactory<>("rendTengah"));
+        tcRendB.setCellValueFactory(new PropertyValueFactory<>("rendBawah"));
+        tcRendC.setCellValueFactory(new PropertyValueFactory<>("rendCampur"));
     }
     
     public FisikTebu hitungRataRata(){
@@ -619,6 +700,34 @@ public class AnalisaKemasakanController implements Initializable {
         return hasil;
     }
     
+    public Double duaDesimal(String angka){
+        Double hasil;
+        DecimalFormat df = new DecimalFormat("#0.00");
+        hasil = Double.valueOf(df.format(Double.parseDouble(angka)));
+        return hasil;
+    }
+    
+    public Double satuDesimal(String angka){
+        Double hasil;
+        DecimalFormat df = new DecimalFormat("#0.0");
+        hasil = Double.valueOf(df.format(Double.parseDouble(angka)));
+        return hasil;
+    }
+    
+    public Double satuDesimalDouble(Double angka){
+        Double hasil;
+        DecimalFormat df = new DecimalFormat("#0.0");
+        hasil = Double.valueOf(df.format(angka));
+        return hasil;
+    }
+    
+    public Double duaDesimalDouble(Double angka){
+        Double hasil;
+        DecimalFormat df = new DecimalFormat("#0.00");
+        hasil = Double.valueOf(df.format(angka));
+        return hasil;
+    }
+    
     public void validasiInput(){
         if (txtBobotTebuAtas.validate() && txtBobotTebuTengah.validate() && txtBobotTebuBawah.validate() &&
                 txtBobotNiraAtas.validate() && txtBobotNiraTengah.validate() && txtBobotNiraBawah.validate() &&
@@ -626,39 +735,42 @@ public class AnalisaKemasakanController implements Initializable {
                 txtPolAtas.validate() && txtPolTengah.validate() && txtPolBawah.validate() && txtPolCampur.validate() &&
                 txtSuhu.validate() && txtKoreksiSuhu.validate() &&
                 dataFisik.size() > 0){
-            Double beratTebuAtas = Double.parseDouble(txtBobotTebuAtas.getText());
-            Double beratTebuTengah = Double.parseDouble(txtBobotTebuTengah.getText());
-            Double beratTebuBawah = Double.parseDouble(txtBobotTebuBawah.getText());
-            Double beratNiraAtas = Double.parseDouble(txtBobotNiraAtas.getText());
-            Double beratNiraTengah = Double.parseDouble(txtBobotNiraTengah.getText());
-            Double beratNiraBawah = Double.parseDouble(txtBobotNiraBawah.getText());
-            Double brixBacaAtas = Double.parseDouble(txtBrixAtas.getText());
-            Double brixBacaTengah = Double.parseDouble(txtBrixTengah.getText());
-            Double brixBacaBawah = Double.parseDouble(txtBrixBawah.getText());
-            Double brixBacaCampur = Double.parseDouble(txtBrixCampur.getText());
+            //todo : format desimal dua angka belakang koma
+            DecimalFormat dfDuaAngka = new DecimalFormat("#0.00");
+            DecimalFormat dfSatuAngka = new DecimalFormat("#0.0");
+            Double beratTebuAtas = duaDesimal(txtBobotTebuAtas.getText());
+            Double beratTebuTengah = duaDesimal(txtBobotTebuTengah.getText());
+            Double beratTebuBawah = duaDesimal(txtBobotTebuBawah.getText());
+            Double beratNiraAtas = duaDesimal(txtBobotNiraAtas.getText());
+            Double beratNiraTengah = duaDesimal(txtBobotNiraTengah.getText());
+            Double beratNiraBawah = duaDesimal(txtBobotNiraBawah.getText());
+            Double brixBacaAtas = satuDesimal(txtBrixAtas.getText());
+            Double brixBacaTengah = satuDesimal(txtBrixTengah.getText());
+            Double brixBacaBawah = satuDesimal(txtBrixBawah.getText());
+            Double brixBacaCampur = satuDesimal(txtBrixCampur.getText());
             Double koreksiSuhu = Double.parseDouble(txtKoreksiSuhu.getText());
-            Double brixAtas = brixBacaAtas + koreksiSuhu;
-            Double brixTengah = brixBacaTengah + koreksiSuhu;
-            Double brixBawah = brixBacaBawah + koreksiSuhu;
-            Double brixCampur = brixBacaCampur + koreksiSuhu;
-            Double polBacaAtas = Double.parseDouble(txtPolAtas.getText());
-            Double polBacaTengah = Double.parseDouble(txtPolTengah.getText());
-            Double polBacaBawah = Double.parseDouble(txtPolBawah.getText());
-            Double polBacaCampur = Double.parseDouble(txtPolCampur.getText());
-            Double faktorPerah = (beratNiraAtas + beratNiraTengah + beratNiraBawah) / (beratTebuAtas + beratTebuTengah + beratTebuBawah);
-            Double polAtas = hitungPol(polBacaAtas, hitungBJ(brixAtas));
-            Double polTengah = hitungPol(polBacaTengah, hitungBJ(brixTengah));
-            Double polBawah = hitungPol(polBacaBawah, hitungBJ(brixBawah));
-            Double polCampur = hitungPol(polBacaCampur, hitungBJ(brixCampur));
-            Double nnAtas = hitungNn(polAtas, brixAtas);
-            Double nnTengah = hitungNn(polTengah, brixTengah);
-            Double nnBawah = hitungNn(polBawah, brixBawah);
-            Double nnCampur = hitungNn(polCampur, brixCampur);
-            Double rendAtas = nnAtas * faktorPerah;
-            Double rendTengah = nnTengah * faktorPerah;
-            Double rendBawah = nnBawah * faktorPerah;
-            Double rendCampur = nnCampur * faktorPerah;
-            Double fk = (rendBawah - rendAtas) / rendBawah * 100;
+            Double brixAtas = duaDesimalDouble(brixBacaAtas + koreksiSuhu);
+            Double brixTengah = duaDesimalDouble(brixBacaTengah + koreksiSuhu);
+            Double brixBawah = duaDesimalDouble(brixBacaBawah + koreksiSuhu);
+            Double brixCampur = duaDesimalDouble(brixBacaCampur + koreksiSuhu);
+            Double polBacaAtas = satuDesimal(txtPolAtas.getText());
+            Double polBacaTengah = satuDesimal(txtPolTengah.getText());
+            Double polBacaBawah = satuDesimal(txtPolBawah.getText());
+            Double polBacaCampur = satuDesimal(txtPolCampur.getText());
+            Double faktorPerah = duaDesimalDouble((beratNiraAtas + beratNiraTengah + beratNiraBawah) / (beratTebuAtas + beratTebuTengah + beratTebuBawah));
+            Double polAtas = duaDesimalDouble(hitungPol(polBacaAtas, hitungBJ(brixAtas)));
+            Double polTengah = duaDesimalDouble(hitungPol(polBacaTengah, hitungBJ(brixTengah)));
+            Double polBawah = duaDesimalDouble(hitungPol(polBacaBawah, hitungBJ(brixBawah)));
+            Double polCampur = duaDesimalDouble(hitungPol(polBacaCampur, hitungBJ(brixCampur)));
+            Double nnAtas = duaDesimalDouble(hitungNn(polAtas, brixAtas));
+            Double nnTengah = duaDesimalDouble(hitungNn(polTengah, brixTengah));
+            Double nnBawah = duaDesimalDouble(hitungNn(polBawah, brixBawah));
+            Double nnCampur = duaDesimalDouble(hitungNn(polCampur, brixCampur));
+            Double rendAtas = duaDesimalDouble(nnAtas * faktorPerah);
+            Double rendTengah = duaDesimalDouble(nnTengah * faktorPerah);
+            Double rendBawah = duaDesimalDouble(nnBawah * faktorPerah);
+            Double rendCampur = duaDesimalDouble(nnCampur * faktorPerah);
+            Double fk = duaDesimalDouble((rendBawah - rendAtas) / rendBawah * 100);
             java.sql.Date tglAnalisa = java.sql.Date.valueOf(dtpTglAnalisa.getValue());
             java.sql.Date tglPosting = new java.sql.Date(Calendar.getInstance().getTime().getTime());
             /*
@@ -700,10 +812,10 @@ public class AnalisaKemasakanController implements Initializable {
                     polBawah, //pol bawah
                     polCampur, //pol campur
                     faktorPerah, //faktorPerah
-                    (polAtas/brixAtas)*100, //hkAtas
-                    (polTengah/brixTengah)*100, //hkTengah
-                    (polBawah/brixBawah)*100, //hkBawah
-                    (polCampur/brixCampur)*100, //hkCampur
+                    satuDesimalDouble((polAtas/brixAtas)*100), //hkAtas
+                    satuDesimalDouble((polTengah/brixTengah)*100), //hkTengah
+                    satuDesimalDouble((polBawah/brixBawah)*100), //hkBawah
+                    satuDesimalDouble((polCampur/brixCampur)*100), //hkCampur
                     nnAtas, //NN Atas
                     nnTengah, //NN Tengah
                     nnBawah, //NN Bawah
@@ -754,6 +866,31 @@ public class AnalisaKemasakanController implements Initializable {
     });
     }
     
+    public void loadDataPetak(){
+        txtKodePetak.setText(petakKebun.getKodePetak() + " " +
+                petakKebun.getRayon() + " " +
+                petakKebun.getNamaKebun() + " " + petakKebun.getNoPetak()
+                + " " + petakKebun.getMasaTanam() + " " +
+                petakKebun.getKategori()
+        );
+        txtLuasPetak.setText(String.valueOf(petakKebun.getLuasPetak()) + " Ha");
+        txtVarietas.setText(varietasDao.getNamaVarietas(petakKebun.getVarietas()));
+    }
+    
+    public void validasiDataAwal(){
+        if (petakKebun != null && jenisAnalisa > -1){
+            loadDataPetak();
+            containerAnkem.getSelectionModel().select(pageInputDataAnalisa2);
+        } else {
+            if (jenisAnalisa == -1){
+                alert.showErrorAlert("Anda belum memilih jenis analisa!");
+            } else {
+                alert.showErrorAlert("Anda belum memilih petak kebun!");
+            }
+
+        }
+    }
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
@@ -763,6 +900,7 @@ public class AnalisaKemasakanController implements Initializable {
         btnSubMenuInputDataAnalisa.setOnAction((event) -> {
             containerAnkem.getSelectionModel().select(pageInputDataAnalisa);
             datePickerDisplay();
+            resetDataAwal();
             resetField();
             validatorField();
             autoCompleteGroup();
@@ -772,7 +910,7 @@ public class AnalisaKemasakanController implements Initializable {
             msc.getTabPane().getSelectionModel().select(msc.getTabMainMenu());
         });
         btnNextAnalisa.setOnAction((event) -> {
-            containerAnkem.getSelectionModel().select(pageInputDataAnalisa2);
+            validasiDataAwal();
         });
         btnSimpanData.setOnAction((event) -> {
             titPaneHasilAnalisa.setExpanded(true);
@@ -800,6 +938,21 @@ public class AnalisaKemasakanController implements Initializable {
         btnSimpanData.setOnAction((event) -> {
             validasiInput();
         });
+        btnTambahSampel.setOnAction((event) -> {
+            resetField();
+            titPaneInputData.setExpanded(true);
+        });
+        btnBatal.setOnAction((event) -> {
+            if (alert.showConfirmation("Anda yakin akan membatalkan input?")){
+                resetDataAwal();
+                resetField();
+                containerAnkem.getSelectionModel().select(pageInputDataAnalisa);
+            }
+        });
+        btnTambahSampel.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
+        btnHapusFisik.disableProperty().bind(Bindings.size(dataFisik).lessThan(1));
+        txtNoSampel.textProperty().bind(Bindings.size(dataAnalisa).add(1).asString());
+        txtLabelRonde.textProperty().bind(txtRonde.textProperty());
     }
     
 }

@@ -108,7 +108,7 @@
                                                 <Font name="Open Sans" size="14.0" />
                                              </font>
                                           </Label>
-                                          <JFXTextField fx:id="txtJenisAnalisa" layoutX="109.0" prefHeight="26.0" prefWidth="253.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css" />
+                                          <JFXTextField fx:id="txtJenisAnalisa" layoutX="109.0" layoutY="4.0" prefHeight="26.0" prefWidth="253.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css" />
                                        </children>
                                        <padding>
                                           <Insets bottom="20.0" />
@@ -134,7 +134,7 @@
                                                 <Font name="Open Sans" size="14.0" />
                                              </font>
                                           </Label>
-                                          <JFXTextField fx:id="txtRonde" layoutX="109.0" layoutY="12.0" prefHeight="26.0" prefWidth="253.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css" />
+                                          <JFXTextField fx:id="txtRonde" layoutX="109.0" layoutY="14.0" prefHeight="26.0" prefWidth="253.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css" />
                                        </children>
                                        <padding>
                                           <Insets bottom="20.0" />
@@ -170,12 +170,22 @@
                                  <children>
                                     <AnchorPane prefHeight="30.0" prefWidth="200.0">
                                        <children>
-                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Sampel ke" wrappingWidth="75.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="6.0">
+                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" layoutX="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sampel ke" wrappingWidth="75.0" AnchorPane.topAnchor="6.0">
                                              <font>
                                                 <Font name="Open Sans" size="14.0" />
                                              </font>
                                           </Text>
-                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" layoutX="89.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1" wrappingWidth="70.998046875" AnchorPane.topAnchor="6.0">
+                                          <Text fx:id="txtNoSampel" fill="#e5e5e5" fontSmoothingType="LCD" layoutX="275.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1" wrappingWidth="70.998046875" AnchorPane.topAnchor="6.0">
+                                             <font>
+                                                <Font name="Open Sans Bold" size="14.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" layoutX="25.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ronde ke" wrappingWidth="75.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="6.0">
+                                             <font>
+                                                <Font name="Open Sans" size="14.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="txtLabelRonde" fill="#e5e5e5" fontSmoothingType="LCD" layoutX="89.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1" wrappingWidth="50.0" AnchorPane.topAnchor="6.0">
                                              <font>
                                                 <Font name="Open Sans Bold" size="14.0" />
                                              </font>
@@ -189,7 +199,7 @@
                                                 <Font name="Open Sans" size="14.0" />
                                              </font>
                                           </Text>
-                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" layoutX="89.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rayon 1 Petak 056 PC" wrappingWidth="500.0" AnchorPane.topAnchor="6.0">
+                                          <Text fx:id="txtKodePetak" fill="#e5e5e5" fontSmoothingType="LCD" layoutX="89.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rayon 1 Petak 056 PC" wrappingWidth="500.0" AnchorPane.topAnchor="6.0">
                                              <font>
                                                 <Font name="Open Sans Bold" size="14.0" />
                                              </font>
@@ -203,7 +213,7 @@
                                                 <Font name="Open Sans" size="14.0" />
                                              </font>
                                           </Text>
-                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" layoutX="89.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5.6 Ha" wrappingWidth="50.0" AnchorPane.topAnchor="6.0">
+                                          <Text fx:id="txtLuasPetak" fill="#e5e5e5" fontSmoothingType="LCD" layoutX="89.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5.6 Ha" wrappingWidth="80.0" AnchorPane.topAnchor="6.0">
                                              <font>
                                                 <Font name="Open Sans Bold" size="14.0" />
                                              </font>
@@ -213,7 +223,7 @@
                                                 <Font name="Open Sans" size="14.0" />
                                              </font>
                                           </Text>
-                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" layoutX="275.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BM1612" wrappingWidth="100.0" AnchorPane.topAnchor="6.0">
+                                          <Text fx:id="txtVarietas" fill="#e5e5e5" fontSmoothingType="LCD" layoutX="275.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BM1612" wrappingWidth="150.0" AnchorPane.topAnchor="6.0">
                                              <font>
                                                 <Font name="Open Sans Bold" size="14.0" />
                                              </font>
@@ -328,7 +338,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane layoutX="10.0" layoutY="160.0" prefHeight="30.0" prefWidth="200.0">
                                                                <children>
-                                                                  <Text fill="#e5e5e5" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Pol baca" wrappingWidth="100.0" AnchorPane.topAnchor="6.0">
+                                                                  <Text fill="#e5e5e5" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Putaran" wrappingWidth="100.0" AnchorPane.topAnchor="6.0">
                                                                      <font>
                                                                         <Font name="Open Sans" size="14.0" />
                                                                      </font>
@@ -429,10 +439,10 @@
                                                    <children>
                                                       <VBox layoutX="14.0" layoutY="14.0" prefHeight="270.0" prefWidth="1000.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                                                          <children>
-                                                            <TableView fx:id="tvHasil" prefHeight="200.0" prefWidth="200.0">
+                                                            <TableView fx:id="tvHasil" prefHeight="200.0" prefWidth="200.0" styleClass="tableUmum" stylesheets="@../assets/main_interface.css">
                                                               <columns>
-                                                                <TableColumn fx:id="tcNoSampel" editable="false" prefWidth="30.0" sortable="false" text="No." />
-                                                                <TableColumn fx:id="tcKodePetak" editable="false" prefWidth="85.0" sortable="false" text="Kode Petak" />
+                                                                <TableColumn fx:id="tcNoSampel" editable="false" prefWidth="30.0" sortable="false" style="-fx-alignment: CENTER;" text="No." />
+                                                                <TableColumn fx:id="tcKodePetak" editable="false" prefWidth="85.0" sortable="false" style="-fx-alignment: LEFT;" text="Kode Petak" />
                                                                   <TableColumn fx:id="tcBxA" prefWidth="50.0" text="Brix A" />
                                                                   <TableColumn fx:id="tcBxT" editable="false" prefWidth="50.0" sortable="false" text="Brix T" />
                                                                   <TableColumn fx:id="tcBxB" editable="false" prefWidth="50.0" sortable="false" text="Brix B" />
@@ -467,12 +477,12 @@
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                  <children>
-                                    <VBox prefHeight="200.0" prefWidth="200.0">
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
                                        <HBox.margin>
                                           <Insets left="10.0" />
                                        </HBox.margin>
                                        <children>
-                                          <JFXButton fx:id="btnSimpanData" alignment="CENTER_RIGHT" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Simpan">
+                                          <JFXButton fx:id="btnSimpanData" alignment="CENTER" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Simpan">
                                              <graphic>
                                                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -485,6 +495,44 @@
                                              </VBox.margin>
                                           </JFXButton>
                                        </children>
+                                    </VBox>
+                                    <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="150.0">
+                                       <children>
+                                          <JFXButton fx:id="btnTambahSampel" alignment="CENTER" disable="true" prefWidth="150.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Tambah Sampel">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../assets/add.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </JFXButton>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <JFXButton fx:id="btnBatal" alignment="CENTER" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Batal">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../assets/previous.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </JFXButton>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
                                     </VBox>
                                  </children>
                               </HBox>

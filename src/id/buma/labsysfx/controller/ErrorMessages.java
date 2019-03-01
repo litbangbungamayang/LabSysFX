@@ -5,7 +5,9 @@
  */
 package id.buma.labsysfx.controller;
 
+import java.util.Optional;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 /**
  *
@@ -33,6 +35,15 @@ public void showErrorAlert(String message){
     alert.setHeaderText(null);
     alert.setContentText(message);
     alert.showAndWait();
+}
+
+public boolean showConfirmation(String message){
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Konfirmasi");
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    Optional<ButtonType> pilihan = alert.showAndWait();
+    return pilihan.get() == ButtonType.OK;
 }
 
 }
