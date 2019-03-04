@@ -21,7 +21,6 @@ import id.buma.labsysfx.model.AnalisaTebu;
 import id.buma.labsysfx.model.FisikTebu;
 import id.buma.labsysfx.model.PetakKebun;
 import java.net.URL;
-import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -34,7 +33,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -123,7 +121,7 @@ public class AnalisaKemasakanController implements Initializable {
     @FXML
     private TitledPane titPaneHasilAnalisa;
     @FXML
-    private JFXButton btnSimpanData;
+    private JFXButton btnHitung;
     @FXML
     private Button btnTambahFisik;
     @FXML
@@ -175,6 +173,8 @@ public class AnalisaKemasakanController implements Initializable {
     @FXML
     private TableColumn<AnalisaTebu, Double> tcKDT;
     @FXML
+    private TableColumn<AnalisaTebu, Double> tcFaktor;
+    @FXML
     private JFXDatePicker dtpTglAnalisa;
     @FXML
     private JFXButton btnTambahSampel;
@@ -190,8 +190,14 @@ public class AnalisaKemasakanController implements Initializable {
     private Text txtLabelRonde;
     @FXML
     private JFXButton btnBatal;
+    @FXML
+    private JFXButton btnSimpan;
+    @FXML
+    private JFXButton btnHapusAnalisa;
     
     final ObservableList<FisikTebu> dataFisik = FXCollections.observableArrayList();
+    
+    final ObservableList<ObservableList<FisikTebu>> listDataFisik = FXCollections.observableArrayList();
     
     final ObservableList<AnalisaTebu> dataAnalisa = FXCollections.observableArrayList();
     
@@ -518,7 +524,7 @@ public class AnalisaKemasakanController implements Initializable {
         });
         autoCompleteJenis.setSelectionHandler((evt) -> {
             txtJenisAnalisa.setText(evt.getObject());
-            jenisAnalisa = autoCompleteJenis.getSuggestions().indexOf(txtJenisAnalisa.getText());
+            jenisAnalisa = autoCompleteJenis.getSuggestions().indexOf(txtJenisAnalisa.getText()) + 1;
         });
         txtPetak.textProperty().addListener((observable) -> {
             if (!txtPetak.getText().isEmpty()){
@@ -547,6 +553,7 @@ public class AnalisaKemasakanController implements Initializable {
         petakKebun = null;
         jenisAnalisa = -1;
         listPopUpPetak.clear();
+        dataAnalisa.clear();
     }
     
     public void resetField(){
@@ -646,6 +653,7 @@ public class AnalisaKemasakanController implements Initializable {
         tcRendT.setCellValueFactory(new PropertyValueFactory<>("rendTengah"));
         tcRendB.setCellValueFactory(new PropertyValueFactory<>("rendBawah"));
         tcRendC.setCellValueFactory(new PropertyValueFactory<>("rendCampur"));
+        tcFaktor.setCellValueFactory(new PropertyValueFactory<>("faktorPerah"));
     }
     
     public FisikTebu hitungRataRata(){
@@ -660,8 +668,8 @@ public class AnalisaKemasakanController implements Initializable {
                 rataRuas = rataRuas + fisikBatang.getRuas();
                 rataDiameter = rataDiameter + fisikBatang.getDiameter();
             }
-            rataPanjang = rataPanjang/jmlData;
-            rataDiameter = rataDiameter/jmlData;
+            rataPanjang = duaDesimalDouble(rataPanjang/jmlData);
+            rataDiameter = duaDesimalDouble(rataDiameter/jmlData);
             rataRuas = Math.round(rataRuas/jmlData);
         }
         FisikTebu rataFisik = new FisikTebu(rataPanjang, rataRuas, rataDiameter);
@@ -735,9 +743,7 @@ public class AnalisaKemasakanController implements Initializable {
                 txtPolAtas.validate() && txtPolTengah.validate() && txtPolBawah.validate() && txtPolCampur.validate() &&
                 txtSuhu.validate() && txtKoreksiSuhu.validate() &&
                 dataFisik.size() > 0){
-            //todo : format desimal dua angka belakang koma
-            DecimalFormat dfDuaAngka = new DecimalFormat("#0.00");
-            DecimalFormat dfSatuAngka = new DecimalFormat("#0.0");
+
             Double beratTebuAtas = duaDesimal(txtBobotTebuAtas.getText());
             Double beratTebuTengah = duaDesimal(txtBobotTebuTengah.getText());
             Double beratTebuBawah = duaDesimal(txtBobotTebuBawah.getText());
@@ -748,6 +754,7 @@ public class AnalisaKemasakanController implements Initializable {
             Double brixBacaTengah = satuDesimal(txtBrixTengah.getText());
             Double brixBacaBawah = satuDesimal(txtBrixBawah.getText());
             Double brixBacaCampur = satuDesimal(txtBrixCampur.getText());
+            Double suhu = satuDesimal(txtSuhu.getText());
             Double koreksiSuhu = Double.parseDouble(txtKoreksiSuhu.getText());
             Double brixAtas = duaDesimalDouble(brixBacaAtas + koreksiSuhu);
             Double brixTengah = duaDesimalDouble(brixBacaTengah + koreksiSuhu);
@@ -772,7 +779,9 @@ public class AnalisaKemasakanController implements Initializable {
             Double rendCampur = duaDesimalDouble(nnCampur * faktorPerah);
             Double fk = duaDesimalDouble((rendBawah - rendAtas) / rendBawah * 100);
             java.sql.Date tglAnalisa = java.sql.Date.valueOf(dtpTglAnalisa.getValue());
-            java.sql.Date tglPosting = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            //java.sql.Date tglPosting = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            java.sql.Timestamp tglPosting = new java.sql.Timestamp(System.currentTimeMillis());
+            FisikTebu rataFisik = hitungRataRata();
             /*
             Data untuk KP dan KDT sementara dummy sambil nunggu kesiapan koneksi data
             */
@@ -781,11 +790,11 @@ public class AnalisaKemasakanController implements Initializable {
             /*
             ******
             */
-            AnalisaTebu at = new AnalisaTebu("kode001",
+            AnalisaTebu at = new AnalisaTebu(petakKebun.getKodePetak(),
                     1, //idUser
-                    1, //jenisAnalisa
-                    1, //ronde
-                    1, //noSampel
+                    jenisAnalisa, //jenisAnalisa
+                    Integer.valueOf(txtLabelRonde.getText()), //ronde
+                    Integer.valueOf(txtNoSampel.getText()), //noSampel
                     tglAnalisa, //tglAnalisa
                     tglPosting, //tglPosting
                     beratTebuAtas, //beratTebuAtas
@@ -811,7 +820,7 @@ public class AnalisaKemasakanController implements Initializable {
                     polTengah, //pol Tengah
                     polBawah, //pol bawah
                     polCampur, //pol campur
-                    faktorPerah, //faktorPerah
+                    faktorPerah, //faktor perah
                     satuDesimalDouble((polAtas/brixAtas)*100), //hkAtas
                     satuDesimalDouble((polTengah/brixTengah)*100), //hkTengah
                     satuDesimalDouble((polBawah/brixBawah)*100), //hkBawah
@@ -824,10 +833,16 @@ public class AnalisaKemasakanController implements Initializable {
                     rendTengah, //rend tengah
                     rendBawah, //rend bawah
                     rendCampur, //rend campur
+                    suhu, //suhu
+                    koreksiSuhu, //koreksi suhu
                     fk, // FK
                     kp, // KP
-                    kdt // KDT
+                    kdt, // KDT
+                    rataFisik.getPanjang(), //rata2 panjang
+                    rataFisik.getRuas(), //rata2 ruas
+                    rataFisik.getDiameter() //rata2 diameter
             );
+            listDataFisik.add(dataFisik);
             dataAnalisa.add(at);
             refreshTabelHasil();
         } else {
@@ -881,6 +896,7 @@ public class AnalisaKemasakanController implements Initializable {
         if (petakKebun != null && jenisAnalisa > -1){
             loadDataPetak();
             containerAnkem.getSelectionModel().select(pageInputDataAnalisa2);
+            titPaneInputData.setExpanded(true);
         } else {
             if (jenisAnalisa == -1){
                 alert.showErrorAlert("Anda belum memilih jenis analisa!");
@@ -912,9 +928,6 @@ public class AnalisaKemasakanController implements Initializable {
         btnNextAnalisa.setOnAction((event) -> {
             validasiDataAwal();
         });
-        btnSimpanData.setOnAction((event) -> {
-            titPaneHasilAnalisa.setExpanded(true);
-        });
         btnTambahFisik.setOnAction((event) -> {
             if(txtInputPanjang.validate() && txtInputRuas.validate() && txtInputDiameter.validate()){
                 Double panjang = Double.parseDouble(txtInputPanjang.getText());
@@ -935,8 +948,10 @@ public class AnalisaKemasakanController implements Initializable {
                 refreshTabelFisik();
             }
         });
-        btnSimpanData.setOnAction((event) -> {
+        btnHitung.setOnAction((event) -> {
             validasiInput();
+            resetField();
+            titPaneHasilAnalisa.setExpanded(true);
         });
         btnTambahSampel.setOnAction((event) -> {
             resetField();
@@ -946,13 +961,31 @@ public class AnalisaKemasakanController implements Initializable {
             if (alert.showConfirmation("Anda yakin akan membatalkan input?")){
                 resetDataAwal();
                 resetField();
+                refreshTabelHasil();
                 containerAnkem.getSelectionModel().select(pageInputDataAnalisa);
             }
         });
+        btnSimpan.setOnAction((event) -> {
+            if (analisaDao.insertNewData(dataAnalisa, listDataFisik)) alert.showInfoAlert("Data berhasil disimpan!");
+            resetField();
+            resetDataAwal();
+            containerAnkem.getSelectionModel().select(pageInputDataAnalisa);
+        });
+        btnHapusAnalisa.setOnAction((event) -> {
+            if (tvHasil.getSelectionModel().getSelectedIndex() > -1 && 
+                    alert.showConfirmation("Anda yakin akan menghapus data ini?")){
+                dataAnalisa.remove(tvHasil.getSelectionModel().getSelectedIndex());
+                refreshTabelHasil();
+            }
+        });
+        
+        /****************** DAFTAR BINDINGS **********************/
+        btnSimpan.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
         btnTambahSampel.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
         btnHapusFisik.disableProperty().bind(Bindings.size(dataFisik).lessThan(1));
         txtNoSampel.textProperty().bind(Bindings.size(dataAnalisa).add(1).asString());
         txtLabelRonde.textProperty().bind(txtRonde.textProperty());
+        btnHapusAnalisa.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
     }
     
 }

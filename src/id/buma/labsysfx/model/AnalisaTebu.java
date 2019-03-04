@@ -21,7 +21,7 @@ public class AnalisaTebu {
     private int ronde;
     private int noSampel;
     private Date tglAnalisa;
-    private Date tglPosting;
+    private java.sql.Timestamp tglPosting;
     private Double beratTebuAtas;
     private Double beratTebuTengah;
     private Double beratTebuBawah;
@@ -45,6 +45,8 @@ public class AnalisaTebu {
     private Double polBacaTengah;
     private Double polBacaBawah;
     private Double polBacaCampur;
+    private Double suhu;
+    private Double koreksiSuhu;
     private Double faktorPerah;
     private Double hkAtas;
     private Double hkTengah;
@@ -61,8 +63,11 @@ public class AnalisaTebu {
     private Double fk;
     private Double kp;
     private Double kdt;
+    private Double rataPanjang;
+    private int rataRuas;
+    private Double rataDiameter;
 
-    public AnalisaTebu(String kodePetak, int idUser, int jenisAnalisa, int ronde, int noSampel, java.sql.Date tglAnalisa, java.sql.Date tglPosting,
+    public AnalisaTebu(String kodePetak, int idUser, int jenisAnalisa, int ronde, int noSampel, java.sql.Date tglAnalisa, java.sql.Timestamp tglPosting,
             Double beratTebuAtas, Double beratTebuTengah, Double beratTebuBawah,
             Double beratNiraAtas, Double beratNiraTengah, Double beratNiraBawah,
             Double penggerek,
@@ -74,7 +79,9 @@ public class AnalisaTebu {
             Double hkAtas, Double hkTengah, Double hkBawah, Double hkCampur,
             Double nnAtas, Double nnTengah, Double nnBawah, Double nnCampur,
             Double rendAtas, Double rendTengah, Double rendBawah, Double rendCampur,
-            Double fk, Double kp, Double kdt){
+            Double suhu, Double koreksiSuhu,
+            Double fk, Double kp, Double kdt, 
+            Double rataPanjang, int rataRuas, Double rataDiameter){
         this.kodePetak = kodePetak;
         this.idUser = idUser;
         this.jenisAnalisa = jenisAnalisa;
@@ -105,6 +112,8 @@ public class AnalisaTebu {
         this.polTengah = polTengah;
         this.polBawah = polBawah;
         this.polCampur = polCampur;
+        this.suhu = suhu;
+        this.koreksiSuhu = koreksiSuhu;
         this.faktorPerah = faktorPerah;
         this.hkAtas = hkAtas;
         this.hkTengah = hkTengah;
@@ -121,6 +130,9 @@ public class AnalisaTebu {
         this.fk = fk;
         this.kp = kp;
         this.kdt = kdt;
+        this.rataPanjang = rataPanjang;
+        this.rataRuas = rataRuas;
+        this.rataDiameter = rataDiameter;
     }
     
     public String getKodePetak() {
@@ -171,11 +183,11 @@ public class AnalisaTebu {
         this.tglAnalisa = tglAnalisa;
     }
 
-    public Date getTglPosting() {
+    public java.sql.Timestamp getTglPosting() {
         return tglPosting;
     }
 
-    public void setTglPosting(Date tglPosting) {
+    public void setTglPosting(java.sql.Timestamp tglPosting) {
         this.tglPosting = tglPosting;
     }
 
@@ -490,6 +502,47 @@ public class AnalisaTebu {
     public void setKdt(Double kdt) {
         this.kdt = kdt;
     }
+
+    public Double getRataPanjang() {
+        return rataPanjang;
+    }
+
+    public void setRataPanjang(Double rataPanjang) {
+        this.rataPanjang = rataPanjang;
+    }
+
+    public int getRataRuas() {
+        return rataRuas;
+    }
+
+    public void setRataRuas(int rataRuas) {
+        this.rataRuas = rataRuas;
+    }
+
+    public Double getRataDiameter() {
+        return rataDiameter;
+    }
+
+    public void setRataDiameter(Double rataDiameter) {
+        this.rataDiameter = rataDiameter;
+    }
+
+    public Double getSuhu() {
+        return suhu;
+    }
+
+    public void setSuhu(Double suhu) {
+        this.suhu = suhu;
+    }
+
+    public Double getKoreksiSuhu() {
+        return koreksiSuhu;
+    }
+
+    public void setKoreksiSuhu(Double koreksiSuhu) {
+        this.koreksiSuhu = koreksiSuhu;
+    }
+
     
     
     

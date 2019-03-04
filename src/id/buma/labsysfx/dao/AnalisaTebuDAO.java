@@ -5,6 +5,10 @@
  */
 package id.buma.labsysfx.dao;
 
+import id.buma.labsysfx.model.AnalisaTebu;
+import id.buma.labsysfx.model.FisikTebu;
+import javafx.collections.ObservableList;
+
 /**
  *
  * @author Bayu Anandavi Muhardika
@@ -14,5 +18,8 @@ package id.buma.labsysfx.dao;
 public interface AnalisaTebuDAO {
     
     public int getRonde(String kodePetak);
+    
+    public boolean insertNewData(ObservableList<AnalisaTebu> dataAnalisa, 
+            ObservableList<ObservableList<FisikTebu>> dataFisik);
     
 }

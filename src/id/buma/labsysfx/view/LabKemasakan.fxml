@@ -37,7 +37,7 @@
       </AnchorPane>
    </top>
    <left>
-      <VBox prefHeight="500.0" prefWidth="200.0" styleClass="side-sub-menu" stylesheets="@../assets/main_interface.css" BorderPane.alignment="CENTER">
+      <VBox prefHeight="500.0" prefWidth="180.0" styleClass="side-sub-menu" stylesheets="@../assets/main_interface.css" BorderPane.alignment="CENTER">
          <children>
             <JFXButton fx:id="btnSubMenuDashboard" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Dashboard" textFill="WHITE">
                <font>
@@ -46,14 +46,28 @@
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../assets/speedometer.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </JFXButton>
-            <JFXButton fx:id="btnSubMenuInputDataAnalisa" layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Input Data Analisa" textFill="WHITE">
+            <JFXButton fx:id="btnSubMenuInputDataAnalisa" layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Input Data" textFill="WHITE">
                <font>
                   <Font name="Open Sans" size="14.0" />
                </font>
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../assets/documents-symbol.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </JFXButton>
             <JFXButton fx:id="btnSubMenuLaporanAnalisa" layoutX="10.0" layoutY="60.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Laporan Analisa" textFill="WHITE">
                <font>
@@ -62,14 +76,28 @@
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../assets/statistics.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </JFXButton>
-            <JFXButton fx:id="btnBackMainMenu" layoutX="10.0" layoutY="110.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Kembali ke Menu Utama" textFill="WHITE">
+            <JFXButton fx:id="btnBackMainMenu" layoutX="10.0" layoutY="110.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="Menu Utama" textFill="WHITE">
                <font>
                   <Font name="Open Sans" size="14.0" />
                </font>
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../assets/previous.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </JFXButton>
          </children></VBox>
    </left>
@@ -442,7 +470,7 @@
                                                             <TableView fx:id="tvHasil" prefHeight="200.0" prefWidth="200.0" styleClass="tableUmum" stylesheets="@../assets/main_interface.css">
                                                               <columns>
                                                                 <TableColumn fx:id="tcNoSampel" editable="false" prefWidth="30.0" sortable="false" style="-fx-alignment: CENTER;" text="No." />
-                                                                <TableColumn fx:id="tcKodePetak" editable="false" prefWidth="85.0" sortable="false" style="-fx-alignment: LEFT;" text="Kode Petak" />
+                                                                <TableColumn fx:id="tcKodePetak" editable="false" prefWidth="85.0" sortable="false" style="-fx-alignment: BOTTOM_LEFT;" text="Kode Petak" />
                                                                   <TableColumn fx:id="tcBxA" prefWidth="50.0" text="Brix A" />
                                                                   <TableColumn fx:id="tcBxT" editable="false" prefWidth="50.0" sortable="false" text="Brix T" />
                                                                   <TableColumn fx:id="tcBxB" editable="false" prefWidth="50.0" sortable="false" text="Brix B" />
@@ -451,6 +479,7 @@
                                                                   <TableColumn fx:id="tcPolT" editable="false" prefWidth="50.0" sortable="false" text="Pol T" />
                                                                   <TableColumn fx:id="tcPolB" editable="false" prefWidth="50.0" sortable="false" text="Pol B" />
                                                                   <TableColumn fx:id="tcPolC" editable="false" prefWidth="50.0" sortable="false" text="Pol C" />
+                                                                  <TableColumn fx:id="tcFaktor" editable="false" prefWidth="50.0" sortable="false" text="Faktor" />
                                                                   <TableColumn fx:id="tcRendA" editable="false" prefWidth="50.0" sortable="false" text="Rend A" />
                                                                   <TableColumn fx:id="tcRendT" editable="false" prefWidth="50.0" sortable="false" text="Rend T" />
                                                                   <TableColumn fx:id="tcRendB" editable="false" prefWidth="50.0" sortable="false" text="Rend B" />
@@ -460,6 +489,22 @@
                                                                   <TableColumn fx:id="tcKDT" editable="false" prefWidth="50.0" sortable="false" text="KDT" />
                                                               </columns>
                                                             </TableView>
+                                                            <HBox prefHeight="100.0" prefWidth="200.0">
+                                                               <children>
+                                                                  <JFXButton fx:id="btnHapusAnalisa" alignment="CENTER" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Hapus">
+                                                                     <graphic>
+                                                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                                           <image>
+                                                                              <Image url="@../assets/bin.png" />
+                                                                           </image>
+                                                                        </ImageView>
+                                                                     </graphic>
+                                                                  </JFXButton>
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets top="10.0" />
+                                                               </VBox.margin>
+                                                            </HBox>
                                                          </children>
                                                       </VBox>
                                                    </children></AnchorPane>
@@ -482,11 +527,11 @@
                                           <Insets left="10.0" />
                                        </HBox.margin>
                                        <children>
-                                          <JFXButton fx:id="btnSimpanData" alignment="CENTER" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Simpan">
+                                          <JFXButton fx:id="btnHitung" alignment="CENTER" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Hitung">
                                              <graphic>
                                                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../assets/floppy-disk.png" />
+                                                      <Image url="@../assets/calculator.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
@@ -522,6 +567,25 @@
                                                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../assets/previous.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </JFXButton>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <VBox layoutX="290.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <JFXButton fx:id="btnSimpan" alignment="CENTER" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Simpan">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../assets/floppy-disk.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>

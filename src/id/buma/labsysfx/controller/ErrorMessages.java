@@ -46,4 +46,12 @@ public boolean showConfirmation(String message){
     return pilihan.get() == ButtonType.OK;
 }
 
+public void showInfoAlert(String message){
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Informasi");
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+}
+
 }

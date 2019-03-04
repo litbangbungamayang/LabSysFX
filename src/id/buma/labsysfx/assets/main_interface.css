@@ -52,7 +52,7 @@
 }
 .side-sub-menu-button {
     -fx-font-family: "Open Sans";
-    -fx-font-size: 14;
+    -fx-font-size: 13;
     -fx-background-color: rgb(24,42,60);
     -fx-text-fill: #e5e5e5;
     -fx-alignment: CENTER_LEFT;
