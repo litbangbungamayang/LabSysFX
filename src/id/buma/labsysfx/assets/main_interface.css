@@ -44,6 +44,22 @@
     -fx-border-color: rgb(210,210,210);
 }
 
+.main-menu-button-lower {
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 13;
+    -fx-background-color: rgb(44,62,80);
+    -fx-text-fill: #b7b7b7;
+    -fx-border-width: 0 0 0 0;
+    -fx-border-color: #bbbbbb;
+}
+.main-menu-button-lower:hover {
+    -fx-background-color: rgb(44, 62, 80);
+    -fx-text-fill: white;
+    -fx-border-color: rgb(210,210,210);
+    -fx-border-width: 0px ;
+    -fx-cursor: hand;
+}
+
 .side-sub-menu {
     /*-fx-background-color: rgb(54, 62, 70);*/
     -fx-background-color: rgb(44,62,80);
@@ -148,3 +164,4 @@
     -fx-font-size : 11;
     -fx-font-family : "Open Sans";
 }
+

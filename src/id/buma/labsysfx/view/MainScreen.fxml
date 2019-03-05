@@ -236,6 +236,26 @@
                                           </JFXButton>
                                        </children>
                                     </HBox>
+                                    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <children>
+                                          <VBox prefHeight="184.0" prefWidth="150.0">
+                                             <children>
+                                                <JFXButton fx:id="btnAdmin" alignment="CENTER" prefWidth="150.0" styleClass="main-menu-button-lower" stylesheets="@../assets/main_interface.css" text="Administrator">
+                                                   <graphic>
+                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../assets/manager.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                </JFXButton>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
                                  </children>
                               </GridPane>
                            </content>

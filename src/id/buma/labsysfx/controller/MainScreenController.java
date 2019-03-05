@@ -51,6 +51,8 @@ public class MainScreenController implements Initializable {
     private JFXButton menuLaboratPabrik;
     @FXML
     private JFXButton menuAnkem;
+    @FXML
+    private JFXButton btnAdmin;
     
     
     private MainApp mainApp;
@@ -79,6 +81,20 @@ public class MainScreenController implements Initializable {
         btnOK.setOnAction(((event) -> {
             tabPane.getSelectionModel().select(tabMainMenu);
         }));
+        btnAdmin.setOnAction((event) -> {
+            try {
+                tabPane.getSelectionModel().select(tabContent);
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(MainApp.class.getResource("view/AdminPage.fxml"));
+                BorderPane adminPage = (BorderPane) loader.load();
+                tabContent.setContent(adminPage);
+                AdminPageController apc = loader.getController();
+                apc.setMainScreenController(this);
+                apc.showDashboard();
+            } catch (IOException ex) {
+                Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         menuLaboratPabrik.setOnAction((event) -> {
             
             try {

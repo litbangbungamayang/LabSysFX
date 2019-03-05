@@ -52,6 +52,7 @@ import javafx.util.StringConverter;
 
 public class AnalisaKemasakanController implements Initializable {
 
+    //<editor-fold defaultstate="collapsed" desc="FXML definitions">
     @FXML
     private JFXButton btnSubMenuDashboard;
     @FXML
@@ -134,7 +135,7 @@ public class AnalisaKemasakanController implements Initializable {
     private TableColumn<FisikTebu, Integer> tcRuas;
     @FXML
     private TableColumn<FisikTebu, Double> tcDiameter;
-    @FXML 
+    @FXML
     private TableView<FisikTebu> tvFisik;
     @FXML
     private TableView<AnalisaTebu> tvHasil;
@@ -194,6 +195,7 @@ public class AnalisaKemasakanController implements Initializable {
     private JFXButton btnSimpan;
     @FXML
     private JFXButton btnHapusAnalisa;
+//</editor-fold>
     
     final ObservableList<FisikTebu> dataFisik = FXCollections.observableArrayList();
     
