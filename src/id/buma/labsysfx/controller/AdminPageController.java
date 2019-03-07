@@ -30,6 +30,9 @@ public class AdminPageController implements Initializable{
     private Tab adminUser;
     @FXML
     private JFXButton btnAdminUser;
+    @FXML
+    private JFXButton btnKembali;
+    
     //</editor-fold>
     
     private MainScreenController msc;
@@ -50,6 +53,9 @@ public class AdminPageController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         btnAdminUser.setOnAction((event) -> {
             containerAdmin.getSelectionModel().select(adminUser);
+        });
+        btnKembali.setOnAction((event) -> {
+            msc.getTabPane().getSelectionModel().select(msc.getTabMainMenu());
         });
     }
     

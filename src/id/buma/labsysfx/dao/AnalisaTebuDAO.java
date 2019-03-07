@@ -22,4 +22,10 @@ public interface AnalisaTebuDAO {
     public boolean insertNewData(ObservableList<AnalisaTebu> dataAnalisa, 
             ObservableList<ObservableList<FisikTebu>> dataFisik);
     
+    public Double getKp(String kodePetak, int rondeSekarang);
+    
+    public Double getKdt(String kodePetak, int rondeSekarang);
+    
+    public boolean cekDuplikat(String kodePetak, int rondeSekarang);
+    
 }

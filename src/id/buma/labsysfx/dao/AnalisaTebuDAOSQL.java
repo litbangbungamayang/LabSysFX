@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -207,6 +208,76 @@ public class AnalisaTebuDAOSQL implements AnalisaTebuDAO {
         } catch (SQLException ex) {
             errMsg.showErrorAlert("Error DAO insertNewData!" + "\n" + 
                     "Error code : " + ex.getMessage());
+            Logger.getLogger(AnalisaTebuDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    @Override
+    public Double getKp(String kodePetak, int rondeSekarang) {
+        String sql = "select * from tbl_analisa_kemasakan where kode_petak = ? and ronde = ?";
+        try (Connection conn = DB.getConn()){
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, kodePetak);
+            ps.setInt(2, rondeSekarang - 2);
+            ResultSet rs = ps.executeQuery();
+            int i = 0;
+            Double jmlRend = 0.00;
+            while (rs.next()){
+                jmlRend = jmlRend + rs.getDouble("rend_campur");
+                i++;
+            }
+            DecimalFormat df = new DecimalFormat("#0.00");
+            Double hasil = Double.valueOf(df.format(jmlRend/i));
+            return hasil;
+        } catch (SQLException ex) {
+            errMsg.showErrorAlert("Error DAO getKp!" + "\n" +
+                    "Error code : " + ex.getMessage());
+            Logger.getLogger(AnalisaTebuDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0.00;
+    }
+
+    @Override
+    public Double getKdt(String kodePetak, int rondeSekarang) {
+        String sql = "select * from tbl_analisa_kemasakan where kode_petak = ? and ronde = ?";
+        try (Connection conn = DB.getConn()){
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, kodePetak);
+            ps.setInt(2, rondeSekarang - 2);
+            ResultSet rs = ps.executeQuery();
+            int i = 0;
+            Double jmlHk = 0.00;
+            while (rs.next()){
+                jmlHk = jmlHk + rs.getDouble("hk_bawah");
+                i++;
+            }
+            DecimalFormat df = new DecimalFormat("#0.00");
+            return Double.valueOf(df.format(jmlHk/i));
+        } catch (SQLException ex) {
+            errMsg.showErrorAlert("Error DAO getKdt!" + "\n" +
+                        "Error code : " + ex.getMessage());
+            Logger.getLogger(AnalisaTebuDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0.00;
+    }
+
+    @Override
+    public boolean cekDuplikat(String kodePetak, int rondeSekarang) {
+        String sql = "select * from tbl_analisa_kemasakan where kode_petak = ? and ronde = ?";
+        try (Connection conn = DB.getConn()){
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, kodePetak);
+            ps.setInt(2, rondeSekarang);
+            ResultSet rs = ps.executeQuery();
+            int i = 0;
+            while (rs.next()){
+                i++;
+            }
+            if (i == 0) return true;
+        } catch (SQLException ex){
+            errMsg.showErrorAlert("Error DAO getKdt!" + "\n" +
+                        "Error code : " + ex.getMessage());
             Logger.getLogger(AnalisaTebuDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;

@@ -781,14 +781,17 @@ public class AnalisaKemasakanController implements Initializable {
             Double rendCampur = duaDesimalDouble(nnCampur * faktorPerah);
             Double fk = duaDesimalDouble((rendBawah - rendAtas) / rendBawah * 100);
             java.sql.Date tglAnalisa = java.sql.Date.valueOf(dtpTglAnalisa.getValue());
-            //java.sql.Date tglPosting = new java.sql.Date(Calendar.getInstance().getTime().getTime());
             java.sql.Timestamp tglPosting = new java.sql.Timestamp(System.currentTimeMillis());
             FisikTebu rataFisik = hitungRataRata();
-            /*
-            Data untuk KP dan KDT sementara dummy sambil nunggu kesiapan koneksi data
-            */
-            Double kp = 120.00;
-            Double kdt = 100.00;
+            Double kp = 0.00;
+            Double kdt = 0.00;
+            if (Integer.valueOf(txtLabelRonde.getText()) > 2){
+                Double rendLalu = analisaDao.getKp(petakKebun.getKodePetak(), Integer.valueOf(txtLabelRonde.getText()));
+                Double hkBawahLalu = analisaDao.getKdt(petakKebun.getKodePetak(), Integer.valueOf(txtLabelRonde.getText()));
+                kp = duaDesimalDouble((rendCampur/rendLalu))*100;
+                kdt = duaDesimalDouble((satuDesimalDouble((polBawah/brixBawah)*100)/
+                        hkBawahLalu))*100;
+            }
             /*
             ******
             */
@@ -895,7 +898,8 @@ public class AnalisaKemasakanController implements Initializable {
     }
     
     public void validasiDataAwal(){
-        if (petakKebun != null && jenisAnalisa > -1){
+        if (petakKebun != null && jenisAnalisa > -1 && 
+                analisaDao.cekDuplikat(petakKebun.getKodePetak(), Integer.valueOf(txtRonde.getText()))){
             loadDataPetak();
             containerAnkem.getSelectionModel().select(pageInputDataAnalisa2);
             titPaneInputData.setExpanded(true);
@@ -903,9 +907,12 @@ public class AnalisaKemasakanController implements Initializable {
             if (jenisAnalisa == -1){
                 alert.showErrorAlert("Anda belum memilih jenis analisa!");
             } else {
-                alert.showErrorAlert("Anda belum memilih petak kebun!");
+                if (petakKebun == null){
+                    alert.showErrorAlert("Anda belum memilih petak kebun!");
+                } else {
+                    alert.showErrorAlert("Terjadi duplikat data petak kebun dan ronde!");
+                }
             }
-
         }
     }
     

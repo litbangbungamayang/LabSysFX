@@ -45,6 +45,18 @@
                   </ImageView>
                </graphic>
             </JFXButton>
+            <JFXButton fx:id="btnKembali" layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="250.0" styleClass="side-sub-menu-button" stylesheets="@../assets/main_interface.css" text="ke Menu Utama" textFill="WHITE">
+               <font>
+                  <Font name="Open Sans" size="16.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../assets/previous.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
          </children></VBox>
    </left>
    <center>
