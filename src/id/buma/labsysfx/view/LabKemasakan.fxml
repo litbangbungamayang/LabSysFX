@@ -598,6 +598,25 @@
                                           <Insets left="10.0" />
                                        </HBox.margin>
                                     </VBox>
+                                    <VBox layoutX="400.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <JFXButton fx:id="btnCetak" alignment="CENTER" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Cetak">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../assets/printer.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </JFXButton>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </VBox>
                                  </children>
                               </HBox>
                            </children>

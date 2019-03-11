@@ -16,6 +16,8 @@ import com.jfoenix.validation.RequiredFieldValidator;
 import id.buma.labsysfx.MainApp;
 import id.buma.labsysfx.dao.AnalisaTebuDAOSQL;
 import id.buma.labsysfx.dao.PetakKebunDAOSQL;
+import id.buma.labsysfx.dao.ReportsPrintingDAO;
+import id.buma.labsysfx.dao.ReportsPrintingDAOSQL;
 import id.buma.labsysfx.dao.VarietasDAOSQL;
 import id.buma.labsysfx.model.AnalisaTebu;
 import id.buma.labsysfx.model.FisikTebu;
@@ -25,7 +27,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -44,6 +45,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
 /**
  *
  * @author  Bayu Anandavi Muhardika
@@ -195,6 +199,10 @@ public class AnalisaKemasakanController implements Initializable {
     private JFXButton btnSimpan;
     @FXML
     private JFXButton btnHapusAnalisa;
+    @FXML
+    private JFXButton btnCetak;
+    
+    
 //</editor-fold>
     
     final ObservableList<FisikTebu> dataFisik = FXCollections.observableArrayList();
@@ -220,6 +228,8 @@ public class AnalisaKemasakanController implements Initializable {
     private final VarietasDAOSQL varietasDao = new VarietasDAOSQL();
     
     private final AnalisaTebuDAOSQL analisaDao = new AnalisaTebuDAOSQL();
+    
+    private final ReportsPrintingDAOSQL reportsDao = new ReportsPrintingDAOSQL();
     
     private final ErrorMessages alert = new ErrorMessages();
     
@@ -916,6 +926,11 @@ public class AnalisaKemasakanController implements Initializable {
         }
     }
     
+    public void tesCetak(){
+        JasperPrint jp = reportsDao.cetakTes("23062835");
+        JasperViewer.viewReport(jp);
+    }
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
@@ -987,6 +1002,10 @@ public class AnalisaKemasakanController implements Initializable {
                 refreshTabelHasil();
             }
         });
+        btnCetak.setOnAction((event) -> {
+            tesCetak();
+        });
+        
         
         /****************** DAFTAR BINDINGS **********************/
         btnSimpan.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
