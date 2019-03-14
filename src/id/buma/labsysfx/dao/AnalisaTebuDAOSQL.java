@@ -102,13 +102,14 @@ public class AnalisaTebuDAOSQL implements AnalisaTebuDAO {
                 "kdt," + //49
                 "rata_panjang," + //50
                 "rata_ruas," + //51
-                "rata_diameter" + //52
+                "rata_diameter," + //52
+                "kg_per_meter" + //53
                 ") values(" +
-                "?,?,?,?,?,?,?,?,?,?,?," +
-                "?,?,?,?,?,?,?,?,?,?," +
-                "?,?,?,?,?,?,?,?,?,?," +
-                "?,?,?,?,?,?,?,?,?,?," +
-                "?,?,?,?,?,?,?,?,?,?,?" +
+                "?,?,?,?,?,?,?,?,?,?,?," + // 11
+                "?,?,?,?,?,?,?,?,?,?," + // 10
+                "?,?,?,?,?,?,?,?,?,?," + // 10
+                "?,?,?,?,?,?,?,?,?,?," + // 10
+                "?,?,?,?,?,?,?,?,?,?,?,?" + // 12
                 ")";
         String sqlFisik = "insert into tbl_fisik_tebu ("+
                 "id_analisa," +
@@ -178,6 +179,7 @@ public class AnalisaTebuDAOSQL implements AnalisaTebuDAO {
                 psAnalisa.setDouble(50, itemsAnalisa.getRataPanjang());
                 psAnalisa.setInt(51, itemsAnalisa.getRataRuas());
                 psAnalisa.setDouble(52, itemsAnalisa.getRataDiameter());
+                psAnalisa.setDouble(53, itemsAnalisa.getKgPerMeter());
                 
                 // insert fisik tebu
                 int indexBatang = 1;

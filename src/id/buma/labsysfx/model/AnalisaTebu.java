@@ -66,6 +66,7 @@ public class AnalisaTebu {
     private Double rataPanjang;
     private int rataRuas;
     private Double rataDiameter;
+    private Double kgPerMeter;
 
     public AnalisaTebu(String kodePetak, int idUser, int jenisAnalisa, int ronde, int noSampel, java.sql.Date tglAnalisa, java.sql.Timestamp tglPosting,
             Double beratTebuAtas, Double beratTebuTengah, Double beratTebuBawah,
@@ -81,7 +82,7 @@ public class AnalisaTebu {
             Double rendAtas, Double rendTengah, Double rendBawah, Double rendCampur,
             Double suhu, Double koreksiSuhu,
             Double fk, Double kp, Double kdt, 
-            Double rataPanjang, int rataRuas, Double rataDiameter){
+            Double rataPanjang, int rataRuas, Double rataDiameter, Double kgPerMeter){
         this.kodePetak = kodePetak;
         this.idUser = idUser;
         this.jenisAnalisa = jenisAnalisa;
@@ -133,6 +134,7 @@ public class AnalisaTebu {
         this.rataPanjang = rataPanjang;
         this.rataRuas = rataRuas;
         this.rataDiameter = rataDiameter;
+        this.kgPerMeter = kgPerMeter;
     }
     
     public String getKodePetak() {
@@ -541,6 +543,14 @@ public class AnalisaTebu {
 
     public void setKoreksiSuhu(Double koreksiSuhu) {
         this.koreksiSuhu = koreksiSuhu;
+    }
+
+    public Double getKgPerMeter() {
+        return kgPerMeter;
+    }
+
+    public void setKgPerMeter(Double kgPerMeter) {
+        this.kgPerMeter = kgPerMeter;
     }
 
     
