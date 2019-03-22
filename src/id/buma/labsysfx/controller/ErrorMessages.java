@@ -8,6 +8,7 @@ package id.buma.labsysfx.controller;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Region;
 
 /**
  *
@@ -31,6 +32,7 @@ public void showWarningAlert(String message){
     
 public void showErrorAlert(String message){
     Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
     alert.setTitle("ERROR!");
     alert.setHeaderText(null);
     alert.setContentText(message);

@@ -5,6 +5,7 @@
  */
 package id.buma.labsysfx.dao;
 
+import id.buma.labsysfx.controller.ErrorMessages;
 import id.buma.labsysfx.database.DB;
 import java.sql.Connection;
 import java.sql.Date;
@@ -17,11 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRQuery;
 import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.base.JRBaseQuery;
 
 /**
  *
@@ -31,6 +30,8 @@ import net.sf.jasperreports.engine.base.JRBaseQuery;
 
 public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
 
+    private final ErrorMessages alert = new ErrorMessages();
+    
     @Override
     public JasperPrint cetakTes(String kodePetak) {
         JasperPrint jp = null;
@@ -49,7 +50,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanHarianTs(Date tglAnalisa) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            String fileName = "./reports/LaporanHarianTS.jasper";
+            String fileName = "reports/LaporanHarianTS.jasper";
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -74,15 +75,11 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
             ps.setDate(1, tglAnalisa);
             ResultSet rs = ps.executeQuery();
             JRDataSource jrds = new JRResultSetDataSource(rs);
-            /*
             Map map = new HashMap();
-            map.put("tgl_awal", tglAnalisa);
-            */
-            Map map = new HashMap();
-            //map.put("tgl_awal", tglAnalisa);
             jp = JasperFillManager.fillReport(fileName, map, jrds);
-        } catch (SQLException | JRException ex){
+        } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing laporanHarianTS method!\nError code :\n" + ex.toString());
         }
         return jp;
     }
