@@ -7,6 +7,7 @@ package id.buma.labsysfx.controller;
 
 import com.jfoenix.controls.JFXAutoCompletePopup;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.DoubleValidator;
@@ -34,6 +35,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
@@ -44,6 +46,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
 /**
@@ -54,7 +58,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 public class AnalisaKemasakanController implements Initializable {
 
-    //<editor-fold defaultstate="collapsed" desc="FXML definitions">
+//<editor-fold defaultstate="collapsed" desc="FXML definitions">
     @FXML
     private JFXButton btnSubMenuDashboard;
     @FXML
@@ -71,6 +75,8 @@ public class AnalisaKemasakanController implements Initializable {
     private Tab pageInputDataAnalisa;
     @FXML
     private Tab pageInputDataAnalisa2;
+    @FXML
+    private Tab pageLaporan;
     @FXML
     private JFXTextField txtPetak;
     @FXML
@@ -180,6 +186,10 @@ public class AnalisaKemasakanController implements Initializable {
     @FXML
     private JFXDatePicker dtpTglAnalisa;
     @FXML
+    private JFXDatePicker dtpTglLaporanAwal;
+    @FXML
+    private JFXDatePicker dtpTglLaporanAkhir;
+    @FXML
     private JFXButton btnTambahSampel;
     @FXML
     private Text txtNoSampel;
@@ -192,15 +202,21 @@ public class AnalisaKemasakanController implements Initializable {
     @FXML
     private Text txtLabelRonde;
     @FXML
+    private JFXTextField txtLaporanTstr;
+    @FXML
     private JFXButton btnBatal;
     @FXML
     private JFXButton btnSimpan;
     @FXML
     private JFXButton btnHapusAnalisa;
-    
+    @FXML
+    private JFXButton btnPreview;
+    @FXML
+    private CheckBox chkLaporanSd;
     
 //</editor-fold>
     
+//<editor-fold defaultstate="collapsed" desc="Deklarasi">
     final ObservableList<FisikTebu> dataFisikTemp = FXCollections.observableArrayList();
     
     ObservableList<FisikTebu> dataFisik = FXCollections.observableArrayList();
@@ -230,8 +246,9 @@ public class AnalisaKemasakanController implements Initializable {
     private final ReportsPrintingDAOSQL reportsDao = new ReportsPrintingDAOSQL();
     
     private final ErrorMessages alert = new ErrorMessages();
+//</editor-fold>
     
-    
+//<editor-fold defaultstate="collapsed" desc="Methods Library">   
     public void setMainApp(MainApp mainApp){
         this.mainApp = mainApp;
     }
@@ -246,6 +263,9 @@ public class AnalisaKemasakanController implements Initializable {
     
     public void showDashboard(){
         containerAnkem.getSelectionModel().select(pageDashboard);
+        datePickerDisplay();
+        autoCompleteGroup();
+        validatorField();
     }
     
     public Double koreksiDesimal(Double angka){
@@ -506,6 +526,21 @@ public class AnalisaKemasakanController implements Initializable {
             dtpTglAnalisa.validate();
         });
         
+        dtpTglLaporanAwal.getValidators().add(validatorWajib);
+        dtpTglLaporanAwal.focusedProperty().addListener((observable) -> {
+            dtpTglLaporanAwal.validate();
+        });
+        
+        dtpTglLaporanAkhir.getValidators().add(validatorWajib);
+        dtpTglLaporanAkhir.focusedProperty().addListener((observable) -> {
+            dtpTglLaporanAkhir.validate();
+        });
+        
+        txtLaporanTstr.getValidators().add(validatorWajib);
+        txtLaporanTstr.focusedProperty().addListener((observable) -> {
+            txtLaporanTstr.validate();
+        });
+        
     }
     
     public void autoCompleteGroup(){
@@ -521,10 +556,13 @@ public class AnalisaKemasakanController implements Initializable {
         }
         JFXAutoCompletePopup<String> autoCompleteJenis = new JFXAutoCompletePopup<>();
         JFXAutoCompletePopup<String> autoCompletePetak = new JFXAutoCompletePopup<>();
+        JFXAutoCompletePopup<String> autoCompleteTstr = new JFXAutoCompletePopup<>();
         autoCompleteJenis.getSuggestions().addAll("Analisa Rutin", "Analisa Tebu Bakar", "Analisa Tebu Percobaan");
         autoCompletePetak.getSuggestions().addAll(listPopUpPetak);
+        autoCompleteTstr.getSuggestions().addAll("TS", "TR");
         autoCompleteJenis.cellLimitProperty().setValue(3);
         autoCompletePetak.cellLimitProperty().setValue(10);
+        /* Handler untuk jenis analisa */
         txtJenisAnalisa.textProperty().addListener((observable) -> {
             autoCompleteJenis.filter(string -> string.toLowerCase().contains(txtJenisAnalisa.getText().toLowerCase()));
             autoCompleteJenis.show(txtJenisAnalisa);
@@ -536,6 +574,20 @@ public class AnalisaKemasakanController implements Initializable {
             txtJenisAnalisa.setText(evt.getObject());
             jenisAnalisa = autoCompleteJenis.getSuggestions().indexOf(txtJenisAnalisa.getText()) + 1;
         });
+        
+        /********* Handler untuk TSTR laporan *********/
+        txtLaporanTstr.textProperty().addListener((observable) -> {
+            autoCompleteJenis.filter(string -> string.toLowerCase().contains(txtLaporanTstr.getText().toLowerCase()));
+            autoCompleteTstr.show(txtLaporanTstr);
+        });
+        txtLaporanTstr.focusedProperty().addListener((observable) -> {
+            if (txtLaporanTstr.isFocused()) autoCompleteTstr.show(txtLaporanTstr);
+        });
+        autoCompleteTstr.setSelectionHandler((event) -> {
+            txtLaporanTstr.setText(event.getObject());
+        });
+        
+        /********* Handler untuk petak kebun **********/
         txtPetak.textProperty().addListener((observable) -> {
             if (!txtPetak.getText().isEmpty()){
                 autoCompletePetak.filter(string -> string.toLowerCase().contains(txtPetak.getText().toLowerCase()));
@@ -753,7 +805,7 @@ public class AnalisaKemasakanController implements Initializable {
                 txtBobotNiraAtas.validate() && txtBobotNiraTengah.validate() && txtBobotNiraBawah.validate() &&
                 txtBrixAtas.validate() && txtBrixTengah.validate() && txtBrixBawah.validate() && txtBrixCampur.validate() &&
                 txtPolAtas.validate() && txtPolTengah.validate() && txtPolBawah.validate() && txtPolCampur.validate() &&
-                txtSuhu.validate() && txtKoreksiSuhu.validate() &&
+                txtSuhu.validate() && txtKoreksiSuhu.validate() && dtpTglAnalisa.getValue() != null &&
                 dataFisikTemp.size() > 0){
 
             Double beratTebuAtas = duaDesimal(txtBobotTebuAtas.getText());
@@ -897,6 +949,8 @@ public class AnalisaKemasakanController implements Initializable {
             }
         }
     });
+        dtpTglLaporanAwal.setConverter(dtpTglAnalisa.getConverter());
+        dtpTglLaporanAkhir.setConverter(dtpTglAnalisa.getConverter());
     }
     
     public void loadDataPetak(){
@@ -935,6 +989,30 @@ public class AnalisaKemasakanController implements Initializable {
         // TODO : buat prosedur cetak periode
     }
     
+    public void previewLaporan(){
+        dtpTglLaporanAwal.validate();
+        if (dtpTglLaporanAwal.getValue() != null && txtLaporanTstr.validate()){
+            if (chkLaporanSd.isSelected()){
+                dtpTglLaporanAkhir.validate();
+                if (dtpTglLaporanAkhir.getValue() != null){
+                    
+                } else {
+                    alert.showErrorAlert("Tanggal sampai dengan laporan belum dipilih!");
+                }
+            } else {
+                if (txtLaporanTstr.getText().equals("TS")){
+                    JasperPrint jp = reportsDao.laporanHarianTs(java.sql.Date.valueOf(dtpTglLaporanAwal.getValue()));
+                    JasperViewer.viewReport(jp, false);
+                }
+            }
+        } else {
+            if (dtpTglLaporanAwal.getValue() == null) alert.showErrorAlert("Tanggal laporan belum dipilih!");
+            if (!txtLaporanTstr.validate()) alert.showErrorAlert("Kepemilikan tebu belum dipilih!");
+        }
+    }
+    
+//</editor-fold>
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
@@ -943,13 +1021,14 @@ public class AnalisaKemasakanController implements Initializable {
         });
         btnSubMenuInputDataAnalisa.setOnAction((event) -> {
             containerAnkem.getSelectionModel().select(pageInputDataAnalisa);
-            datePickerDisplay();
             resetDataAwal();
             resetField();
-            validatorField();
-            autoCompleteGroup();
             titPaneInputData.setExpanded(true);
         });
+        btnSubMenuLaporanAnalisa.setOnAction((event) -> {
+            containerAnkem.getSelectionModel().select(pageLaporan);
+        });
+        
         btnBackMainMenu.setOnAction((event) -> {
             msc.getTabPane().getSelectionModel().select(msc.getTabMainMenu());
         });
@@ -978,7 +1057,6 @@ public class AnalisaKemasakanController implements Initializable {
         });
         btnHitung.setOnAction((event) -> {
             validasiInput();
-            alert.showInfoAlert(String.valueOf(listDataFisik.get(0).size()));
             resetField();
             titPaneHasilAnalisa.setExpanded(true);
         });
@@ -1008,6 +1086,9 @@ public class AnalisaKemasakanController implements Initializable {
                 refreshTabelHasil();
             }
         });
+        btnPreview.setOnAction((event) -> {
+            previewLaporan();
+        });
         
         
         /****************** DAFTAR BINDINGS **********************/
@@ -1017,6 +1098,7 @@ public class AnalisaKemasakanController implements Initializable {
         txtNoSampel.textProperty().bind(Bindings.size(dataAnalisa).add(1).asString());
         txtLabelRonde.textProperty().bind(txtRonde.textProperty());
         btnHapusAnalisa.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
+        dtpTglLaporanAkhir.disableProperty().bind(Bindings.not(chkLaporanSd.selectedProperty()));
     }
     
 }

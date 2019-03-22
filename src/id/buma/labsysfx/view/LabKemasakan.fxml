@@ -6,6 +6,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -593,6 +594,88 @@
                                                 <Insets top="5.0" />
                                              </VBox.margin>
                                           </JFXButton>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </GridPane>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="pageLaporan" text="Untitled Tab">
+                     <content>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="NEVER" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                              <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="30.0" vgrow="ALWAYS" />
+                           </rowConstraints>
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                       <children>
+                                          <JFXButton fx:id="btnPreview" alignment="CENTER" prefWidth="100.0" styleClass="standard-button" stylesheets="@../assets/main_interface.css" text="Preview">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../assets/printer.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </JFXButton>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox prefHeight="112.0" prefWidth="192.0">
+                                       <children>
+                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Tanggal Analisa" wrappingWidth="192.0">
+                                             <font>
+                                                <Font name="Open Sans" size="14.0" />
+                                             </font>
+                                          </Text>
+                                          <JFXDatePicker fx:id="dtpTglLaporanAwal" defaultColor="WHITE" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css" />
+                                          <CheckBox fx:id="chkLaporanSd" mnemonicParsing="false" text="sampai dengan" textFill="WHITE">
+                                             <VBox.margin>
+                                                <Insets top="30.0" />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font name="Open Sans" size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <JFXDatePicker fx:id="dtpTglLaporanAkhir" defaultColor="WHITE" disable="true" layoutX="10.0" layoutY="30.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css">
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                          </JFXDatePicker>
+                                          <Text fill="#e5e5e5" fontSmoothingType="LCD" layoutX="10.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kepemilikan Tebu (TS/TR) :" wrappingWidth="192.0">
+                                             <font>
+                                                <Font name="Open Sans" size="14.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets top="30.0" />
+                                             </VBox.margin>
+                                          </Text>
+                                          <JFXTextField fx:id="txtLaporanTstr" maxWidth="80.0" prefHeight="30.0" prefWidth="80.0" styleClass="txtFieldUmum" stylesheets="@../assets/main_interface.css">
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                          </JFXTextField>
                                        </children>
                                        <HBox.margin>
                                           <Insets left="10.0" />

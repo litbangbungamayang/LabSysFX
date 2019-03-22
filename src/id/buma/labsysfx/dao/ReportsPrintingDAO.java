@@ -17,4 +17,6 @@ public interface ReportsPrintingDAO {
     
     public JasperPrint cetakTes(String kodePetak);
     
+    public JasperPrint laporanHarianTs(java.sql.Date tglAnalisa);
+    
 }
