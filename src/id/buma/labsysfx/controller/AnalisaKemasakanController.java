@@ -667,6 +667,17 @@ public class AnalisaKemasakanController implements Initializable {
         
         containerAnkem.requestFocus();
     }
+    
+    public void resetFieldLaporan(){
+        dtpTglLaporanAwal.setValue(null);
+        dtpTglLaporanAkhir.setValue(null);
+        txtLaporanTstr.clear();
+        chkLaporanSd.setSelected(false);
+        
+        dtpTglLaporanAwal.getValidators().clear();
+        dtpTglLaporanAkhir.getValidators().clear();
+        txtLaporanTstr.getValidators().clear();
+    }
         
     public void refreshTabelFisik(){
         tvFisik.setItems(dataFisikTemp);
@@ -995,7 +1006,10 @@ public class AnalisaKemasakanController implements Initializable {
             if (chkLaporanSd.isSelected()){
                 dtpTglLaporanAkhir.validate();
                 if (dtpTglLaporanAkhir.getValue() != null){
-                    
+                    java.sql.Date tglAwal = java.sql.Date.valueOf(dtpTglLaporanAwal.getValue());
+                    java.sql.Date tglAkhir = java.sql.Date.valueOf(dtpTglLaporanAkhir.getValue());
+                    JasperPrint jp = reportsDao.laporanPeriodeTs(tglAwal, tglAkhir);
+                    JasperViewer.viewReport(jp, false);
                 } else {
                     alert.showErrorAlert("Tanggal sampai dengan laporan belum dipilih!");
                 }
@@ -1023,10 +1037,13 @@ public class AnalisaKemasakanController implements Initializable {
             containerAnkem.getSelectionModel().select(pageInputDataAnalisa);
             resetDataAwal();
             resetField();
+            validatorField();
             titPaneInputData.setExpanded(true);
         });
         btnSubMenuLaporanAnalisa.setOnAction((event) -> {
             containerAnkem.getSelectionModel().select(pageLaporan);
+            resetFieldLaporan();
+            validatorField();
         });
         
         btnBackMainMenu.setOnAction((event) -> {

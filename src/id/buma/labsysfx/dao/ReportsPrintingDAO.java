@@ -19,4 +19,6 @@ public interface ReportsPrintingDAO {
     
     public JasperPrint laporanHarianTs(java.sql.Date tglAnalisa);
     
+    public JasperPrint laporanPeriodeTs(java.sql.Date tglAwal, java.sql.Date tglAkhir);
+    
 }
