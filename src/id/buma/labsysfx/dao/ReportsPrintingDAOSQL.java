@@ -7,6 +7,9 @@ package id.buma.labsysfx.dao;
 
 import id.buma.labsysfx.controller.ErrorMessages;
 import id.buma.labsysfx.database.DB;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -16,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRResultSetDataSource;
@@ -50,7 +55,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanHarianTs(Date tglAnalisa) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            String fileName = "reports/LaporanHarianTS.jasper";
+            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTS.jasper");
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -90,7 +95,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanPeriodeTs(Date tglAwal, Date tglAkhir) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            String fileName = "reports/LaporanPeriodeTS.jasper";
+            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTS.jasper");
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
