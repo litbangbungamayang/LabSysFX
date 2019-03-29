@@ -1,3 +1,7 @@
+@font-face {
+    src: url("fonts/OpenSans-Regular.ttf");
+}
+
 .banner-atas {
     /*-fx-background-image: url('banner_kecil.png');
     -fx-background-repeat: stretch;
