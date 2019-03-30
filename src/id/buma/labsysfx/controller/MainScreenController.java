@@ -44,6 +44,8 @@ public class MainScreenController implements Initializable {
     @FXML
     private Tab tabMainMenu;
     @FXML
+    private Tab tabLogin;
+    @FXML
     private TabPane tabPane;
     @FXML
     private Tab tabContent;
@@ -53,6 +55,8 @@ public class MainScreenController implements Initializable {
     private JFXButton menuAnkem;
     @FXML
     private JFXButton btnAdmin;
+    @FXML
+    private JFXButton btnLogout;
     
     
     private MainApp mainApp;
@@ -94,6 +98,14 @@ public class MainScreenController implements Initializable {
             } catch (IOException ex) {
                 Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
             }
+        });
+        btnCancel.setOnAction((event) -> {
+            System.exit(0);
+        });
+        btnLogout.setOnAction((event) -> {
+            tabPane.getSelectionModel().select(tabLogin);
+            txtUsername.clear();
+            txtPassword.clear();
         });
         menuLaboratPabrik.setOnAction((event) -> {
             

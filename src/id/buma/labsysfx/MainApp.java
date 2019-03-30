@@ -15,6 +15,9 @@ import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -37,7 +40,21 @@ public class MainApp extends Application {
     private AnchorPane rootLayout;
     
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FontFormatException, IOException {
+        /********* Font Register **********/
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        List<InputStream> lsFonts = new ArrayList<>();
+        InputStream fontReg = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Regular.ttf");
+        lsFonts.add(fontReg);
+        InputStream fontBold = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Bold.ttf");
+        lsFonts.add(fontBold);
+        InputStream fontItalic = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Italic.ttf");
+        lsFonts.add(fontItalic);
+        for (InputStream is : lsFonts){
+            java.awt.Font font = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is);
+            if (ge.registerFont(font)) {System.out.println(font.getName() + " OK");} else {System.out.println(font.getName() + " Failed");}
+        }
+        /************************************************************************************/
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("LabSys - PG. Bungamayang");
         this.primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -45,20 +62,9 @@ public class MainApp extends Application {
     }
     
     public void initRootLayout(){
-        try {
+        try {            
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/MainScreen.fxml"));
-            
-            /********* Font Register **********/
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            InputStream fontReg = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Regular.ttf");
-            InputStream fontBold = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Bold.ttf");
-            InputStream fontItalic = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Italic.ttf");
-            ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, fontReg));
-            ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, fontBold));
-            ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, fontItalic));
-            /************************************************************************************/
-            
             rootLayout = (AnchorPane) loader.load();
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
@@ -66,7 +72,7 @@ public class MainApp extends Application {
             primaryStage.show();
             MainScreenController msc = loader.getController();
             msc.setMainApp(this);
-        } catch (IOException | FontFormatException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -26,7 +26,7 @@
                <children>
                   <AnchorPane prefHeight="30.0">
                      <children>
-                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Sistem Informasi Laboratorium" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="0.0">
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="banner-atas-judul" text="Sistem Informasi Laboratorium" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="0.0">
                            <font>
                               <Font name="Open Sans Bold" size="28.0" />
                            </font>
@@ -59,7 +59,7 @@
                <children>
                   <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" styleClass="main-panel" stylesheets="@../assets/main_interface.css" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
-                      <Tab>
+                      <Tab fx:id="tabLogin">
                            <content>
                               <GridPane opacity="0.96" styleClass="start-panel" stylesheets="@../assets/main_interface.css">
                                 <columnConstraints>
@@ -75,7 +75,7 @@
                                  <children>
                                     <VBox prefHeight="200.0" prefWidth="100.0" styleClass="login-panel" stylesheets="@../assets/main_interface.css" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <GridPane VBox.vgrow="ALWAYS">
+                                          <GridPane stylesheets="@../assets/main_interface.css" VBox.vgrow="ALWAYS">
                                             <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="3.0" prefWidth="3.0" />
                                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="396.0" minWidth="10.0" prefWidth="396.0" />
@@ -87,9 +87,9 @@
                                               <RowConstraints maxHeight="88.0" minHeight="10.0" prefHeight="69.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Text fill="#070707" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="login-panel-judul" text="Login" GridPane.columnIndex="1" GridPane.valignment="CENTER">
                                                    <font>
-                                                      <Font name="Open Sans Bold" size="22.0" />
+                                                      <Font name="Open Sans" size="22.0" />
                                                    </font>
                                                 </Text>
                                                 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -112,8 +112,14 @@
                                                             <Font name="Open Sans" size="16.0" />
                                                          </font>
                                                       </Text>
-                                                      <TextField fx:id="txtUsername" GridPane.columnIndex="1" />
-                                                      <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                      <TextField fx:id="txtUsername" styleClass="login-panel-textfield" GridPane.columnIndex="1">
+                                                         <font>
+                                                            <Font name="Open Sans" size="13.0" />
+                                                         </font></TextField>
+                                                      <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <font>
+                                                            <Font name="Open Sans" size="13.0" />
+                                                         </font></PasswordField>
                                                    </children>
                                                 </GridPane>
                                                 <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -123,7 +129,7 @@
                                                             <Insets left="115.0" right="10.0" top="15.0" />
                                                          </HBox.margin>
                                                       </Button>
-                                                      <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" text="Cancel" HBox.hgrow="NEVER">
+                                                      <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" text="Keluar" HBox.hgrow="NEVER">
                                                          <HBox.margin>
                                                             <Insets left="10.0" right="50.0" top="15.0" />
                                                          </HBox.margin>
@@ -253,6 +259,28 @@
                                                    </VBox.margin>
                                                 </JFXButton>
                                              </children>
+                                             <HBox.margin>
+                                                <Insets top="10.0" />
+                                             </HBox.margin>
+                                          </VBox>
+                                          <VBox layoutX="10.0" layoutY="10.0" prefHeight="184.0" prefWidth="150.0">
+                                             <children>
+                                                <JFXButton fx:id="btnLogout" alignment="CENTER" prefWidth="150.0" styleClass="main-menu-button-lower" stylesheets="@../assets/main_interface.css" text="Log Out">
+                                                   <graphic>
+                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../assets/log-out.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                </JFXButton>
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets top="10.0" />
+                                             </HBox.margin>
                                           </VBox>
                                        </children>
                                     </HBox>

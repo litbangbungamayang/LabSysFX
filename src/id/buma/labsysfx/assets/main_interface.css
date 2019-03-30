@@ -1,12 +1,25 @@
+@font-face{
+    -fx-font-family: "Open Sans", sans-serif;
+    src:url('fonts/OpenSans-Regular.ttf');
+}
+@font-face{
+    -fx-font-family: "Open Sans", sans-serif;
+    -fx-font-weight: bold;
+    src:url('fonts/OpenSans-Bold.ttf');
+}
 @font-face {
-    src: url("fonts/OpenSans-Regular.ttf");
+    -fx-font-family: "Open Sans", sans-serif;
+    -fx-font-style: italic;
+    src:url('fonts/OpenSans-Italic.ttf');
 }
 
 .banner-atas {
-    /*-fx-background-image: url('banner_kecil.png');
-    -fx-background-repeat: stretch;
-    */
     -fx-background-color: #63D471;
+}
+.banner-atas-judul{
+    -fx-font-family: "Open Sans";
+    -fx-font-weight: bold;
+    -fx-font-size: 28;
 }
 
 .pane-standard {
@@ -126,6 +139,18 @@
 
 .login-panel {
     -fx-background-color: rgb(219,219,219);
+    -fx-border-width: 1px;
+    -fx-border-color: #f2f2f2;
+    -fx-font-family: "Open Sans";
+}
+.login-panel-judul {
+    -fx-font-family: "Open Sans";
+    -fx-font-weight: bold;
+    -fx-font-size: 22;
+}
+.login-panel-textfield {
+    -fx-font-family: "Open Sans";
+    -fx-font-weight: bold;
 }
 
 .jfx-combo-box {
