@@ -10,7 +10,11 @@ package id.buma.labsysfx;
 
 
 import id.buma.labsysfx.controller.MainScreenController;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -44,7 +48,17 @@ public class MainApp extends Application {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/MainScreen.fxml"));
-            //Font.loadFont(MainApp.class.getResource("fonts/OpenSans-Regular.ttf").toExternalForm(), 10);
+            
+            /********* Font Register **********/
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            InputStream fontReg = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Regular.ttf");
+            InputStream fontBold = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Bold.ttf");
+            InputStream fontItalic = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Italic.ttf");
+            ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, fontReg));
+            ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, fontBold));
+            ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, fontItalic));
+            /************************************************************************************/
+            
             rootLayout = (AnchorPane) loader.load();
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
@@ -52,7 +66,7 @@ public class MainApp extends Application {
             primaryStage.show();
             MainScreenController msc = loader.getController();
             msc.setMainApp(this);
-        } catch (IOException ex) {
+        } catch (IOException | FontFormatException ex) {
             Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
