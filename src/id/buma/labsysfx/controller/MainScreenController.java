@@ -7,11 +7,15 @@ package id.buma.labsysfx.controller;
 
 import com.jfoenix.controls.JFXButton;
 import id.buma.labsysfx.MainApp;
+import id.buma.labsysfx.dao.AdminPageDAOSQL;
+import id.buma.labsysfx.model.UserLab;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,6 +25,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 /**
@@ -57,7 +63,16 @@ public class MainScreenController implements Initializable {
     private JFXButton btnAdmin;
     @FXML
     private JFXButton btnLogout;
+    @FXML
+    private HBox hboxUsername;
+    @FXML
+    private VBox vboxAdmin;
     
+    public UserLab userLab;
+    
+    public final AdminPageDAOSQL adminPageDao = new AdminPageDAOSQL();
+    
+    private final ErrorMessages alert = new ErrorMessages();
     
     private MainApp mainApp;
     
@@ -83,7 +98,25 @@ public class MainScreenController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         btnOK.setOnAction(((event) -> {
-            tabPane.getSelectionModel().select(tabMainMenu);
+            if (!txtUsername.getText().isEmpty() && !txtPassword.getText().isEmpty()){
+                String username = txtUsername.getText();
+                String password = txtPassword.getText();
+                userLab = adminPageDao.getLogin(username, password);
+                if (userLab != null){
+                    lblUsername.setText(userLab.getNamaUser());
+                    hboxUsername.setVisible(true);
+                    tabPane.getSelectionModel().select(tabMainMenu);   
+                    if (!userLab.getRole().equals("ADM")){
+                        vboxAdmin.setVisible(false);
+                    } else {
+                        vboxAdmin.setVisible(true);
+                    }
+                } else {
+                    alert.showErrorAlert("Username atau password tidak cocok!");
+                }
+                
+            }
+            
         }));
         btnAdmin.setOnAction((event) -> {
             try {
@@ -103,6 +136,8 @@ public class MainScreenController implements Initializable {
             System.exit(0);
         });
         btnLogout.setOnAction((event) -> {
+            userLab = null;
+            hboxUsername.setVisible(false);
             tabPane.getSelectionModel().select(tabLogin);
             txtUsername.clear();
             txtPassword.clear();
@@ -138,5 +173,8 @@ public class MainScreenController implements Initializable {
                 Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }));
+        
+        
+        /******* DAFTAR BINDINGS **************/
     }
 }

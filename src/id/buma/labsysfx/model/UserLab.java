@@ -18,9 +18,11 @@ public class UserLab {
     private String loginPass;
     private String bagian;
     private String role;
+    private int idUser;
     
-    public UserLab(String namaUser, String loginName, String loginPass, 
+    public UserLab(int idUser, String namaUser, String loginName, String loginPass, 
             String bagian, String role){
+        this.idUser = idUser;
         this.namaUser = namaUser;
         this.loginName = loginName;
         this.loginPass = loginPass;
@@ -66,6 +68,14 @@ public class UserLab {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
     
 }

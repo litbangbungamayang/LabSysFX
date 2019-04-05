@@ -5,6 +5,8 @@
  */
 package id.buma.labsysfx.dao;
 
+import id.buma.labsysfx.model.UserLab;
+
 /**
  *
  * @author Bayu Anandavi Muhardika
@@ -13,6 +15,7 @@ package id.buma.labsysfx.dao;
 
 public interface AdminPageDAO {
     
+    public UserLab getLogin(String username, String password);
     
     
 }

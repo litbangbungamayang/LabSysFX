@@ -7,8 +7,6 @@ package id.buma.labsysfx.dao;
 
 import id.buma.labsysfx.controller.ErrorMessages;
 import id.buma.labsysfx.database.DB;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Date;
@@ -19,8 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRResultSetDataSource;
@@ -95,7 +91,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanPeriodeTs(Date tglAwal, Date tglAkhir) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTS.jasper");
+            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTS.jasper");
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -128,7 +124,87 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
             jp = JasperFillManager.fillReport(fileName, map, jrds);
         } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
-            alert.showErrorAlert("Error executing laporanHarianTS method!\nError code :\n" + ex.toString());
+            alert.showErrorAlert("Error executing laporanPeriodeTS method!\nError code :\n" + ex.toString());
+        }
+        return jp;
+    }
+
+    @Override
+    public JasperPrint laporanHarianTr(Date tglAnalisa) {
+        JasperPrint jp = null;
+        try (Connection conn = DB.getConn()){
+            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTR.jasper");
+            String sql =
+                    "select * from " +
+                    "(select ankem.*, petak.kategori, petak.luas_petak, " +
+                        "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
+                        "petak.rayon, petak.varietas, varietas.nama_varietas, " +
+                            "substring(rayon,3,2) as afdeling, " +
+                        "hk_bawah-hk_atas as selisih_hk, " +
+                        "rend_bawah - rend_atas as selisih_rend, " +
+                        "1 as kunci " +
+                        "from tbl_analisa_kemasakan ankem " +
+                        "join tbl_master_petak petak on ankem.kode_petak = petak.kode_petak " +
+                        "join tbl_varietas varietas on petak.varietas = varietas.id_varietas) as t1 " +
+                    "join " +
+                    "(select tuser.nama_user, " +
+                        "1 as kunci " +
+                        "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
+                    "on t1.kunci = t2.kunci " +
+                    "where t1.rayon like ? and t1.tgl_analisa = ? " +
+                    "order by t1.ronde, t1.afdeling, t1.no_petak";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, "TR%");
+            ps.setDate(2, tglAnalisa);
+            ResultSet rs = ps.executeQuery();
+            JRDataSource jrds = new JRResultSetDataSource(rs);
+            Map map = new HashMap();
+            map.put("tgl_awal", tglAnalisa);
+            jp = JasperFillManager.fillReport(fileName, map, jrds);
+        } catch (SQLException|JRException ex){
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing laporanHarianTR method!\nError code :\n" + ex.toString());
+        }
+        return jp;
+    }
+
+    @Override
+    public JasperPrint laporanPeriodeTr(Date tglAwal, Date tglAkhir) {
+        JasperPrint jp = null;
+        try (Connection conn = DB.getConn()){
+            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTR.jasper");
+            String sql =
+                    "select * from " +
+                    "(select ankem.*, petak.kategori, petak.luas_petak, " +
+                        "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
+                        "petak.rayon, petak.varietas, varietas.nama_varietas, " +
+                        "substring(rayon,3,2) as afdeling, " +
+                        "hk_bawah-hk_atas as selisih_hk, " +
+                        "rend_bawah - rend_atas as selisih_rend, " +
+                        "1 as kunci " +
+                        "from tbl_analisa_kemasakan ankem " +
+                        "join tbl_master_petak petak on ankem.kode_petak = petak.kode_petak " +
+                        "join tbl_varietas varietas on petak.varietas = varietas.id_varietas) as t1 " +
+                    "join " +
+                    "(select tuser.nama_user, " +
+                        "1 as kunci " +
+                        "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
+                    "on t1.kunci = t2.kunci " +
+                    "where t1.rayon like ? and t1.tgl_analisa >= ? and t1.tgl_analisa <= ?" +
+                    "order by t1.ronde, t1.afdeling, t1.no_petak";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, "TR%");
+            ps.setDate(2, tglAwal);
+            ps.setDate(3, tglAkhir);
+            ResultSet rs = ps.executeQuery();
+            JRDataSource jrds = new JRResultSetDataSource(rs);
+            Map map = new HashMap();
+            map.put("tgl_awal", tglAwal);
+            map.put("tgl_akhir", tglAkhir);
+            jp = JasperFillManager.fillReport(fileName, map, jrds);
+        } catch (SQLException|JRException ex){
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing laporanPeriodeTR method!\nError code :\n" + ex.toString());
         }
         return jp;
     }

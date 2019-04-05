@@ -12,8 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -34,7 +32,7 @@ public class PetakKebunDAOSQL implements PetakKebunDAO {
     @Override
     public ObservableList<PetakKebun> getAllPetak() {
         ObservableList<PetakKebun> listPetak = FXCollections.observableArrayList();
-        String sql = "select * from tbl_master_petak";
+        String sql = "select * from tbl_master_petak order by rayon";
         try (Connection conn = DB.getConn()){
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

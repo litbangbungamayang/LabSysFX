@@ -7,7 +7,6 @@ package id.buma.labsysfx.controller;
 
 import com.jfoenix.controls.JFXAutoCompletePopup;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.DoubleValidator;
@@ -46,8 +45,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
 /**
@@ -870,7 +867,7 @@ public class AnalisaKemasakanController implements Initializable {
             ******
             */
             AnalisaTebu at = new AnalisaTebu(petakKebun.getKodePetak(),
-                    1, //idUser
+                    msc.userLab.getIdUser(), //idUser
                     jenisAnalisa, //jenisAnalisa
                     Integer.valueOf(txtLabelRonde.getText()), //ronde
                     Integer.valueOf(txtNoSampel.getText()), //noSampel
@@ -1008,8 +1005,15 @@ public class AnalisaKemasakanController implements Initializable {
                 if (dtpTglLaporanAkhir.getValue() != null){
                     java.sql.Date tglAwal = java.sql.Date.valueOf(dtpTglLaporanAwal.getValue());
                     java.sql.Date tglAkhir = java.sql.Date.valueOf(dtpTglLaporanAkhir.getValue());
-                    JasperPrint jp = reportsDao.laporanPeriodeTs(tglAwal, tglAkhir);
-                    JasperViewer.viewReport(jp, false);
+                    if (txtLaporanTstr.getText().equals("TS")){
+                        JasperPrint jp = reportsDao.laporanPeriodeTs(tglAwal, tglAkhir);
+                        JasperViewer.viewReport(jp, false);
+                    } else {
+                        if (txtLaporanTstr.getText().equals("TR")){
+                            JasperPrint jp = reportsDao.laporanPeriodeTr(tglAwal, tglAkhir);
+                            JasperViewer.viewReport(jp,false);
+                        }
+                    }
                 } else {
                     alert.showErrorAlert("Tanggal sampai dengan laporan belum dipilih!");
                 }
@@ -1017,6 +1021,11 @@ public class AnalisaKemasakanController implements Initializable {
                 if (txtLaporanTstr.getText().equals("TS")){
                     JasperPrint jp = reportsDao.laporanHarianTs(java.sql.Date.valueOf(dtpTglLaporanAwal.getValue()));
                     JasperViewer.viewReport(jp, false);
+                } else {
+                    if (txtLaporanTstr.getText().equals("TR")){
+                        JasperPrint jp = reportsDao.laporanHarianTr(java.sql.Date.valueOf(dtpTglLaporanAwal.getValue()));
+                        JasperViewer.viewReport(jp, false);
+                    }
                 }
             }
         } else {
@@ -1090,7 +1099,6 @@ public class AnalisaKemasakanController implements Initializable {
             }
         });
         btnSimpan.setOnAction((event) -> {
-            alert.showInfoAlert(String.valueOf(listDataFisik.get(0).size()));
             if (analisaDao.insertNewData(dataAnalisa, listDataFisik)) alert.showInfoAlert("Data berhasil disimpan!");
             resetField();
             resetDataAwal();
