@@ -57,7 +57,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
                         "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
                         "petak.rayon, petak.varietas, varietas.nama_varietas, " +
-                        "if(rayon = 'TS 1' || rayon = 'TS 2', substring(no_kontrak,9,1), " +
+                        "if(rayon = 'TS1' || rayon = 'TS2', substring(no_kontrak,9,1), " +
                             "substring(no_kontrak,9,2)) as afdeling, " +
                         "hk_bawah-hk_atas as selisih_hk, " +
                         "rend_bawah - rend_atas as selisih_rend, " +
@@ -71,7 +71,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                         "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
                     "on t1.kunci = t2.kunci " +
                     "where t1.rayon like ? and t1.tgl_analisa = ? " +
-                    "order by t1.ronde, t1.afdeling, t1.no_petak";
+                    "order by t1.ronde, t1.afdeling, t1.masa_tanam, t1.no_petak";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "TS%");
             ps.setDate(2, tglAnalisa);
@@ -97,7 +97,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
                         "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
                         "petak.rayon, petak.varietas, varietas.nama_varietas, " +
-                        "if(rayon = 'TS 1' || rayon = 'TS 2', substring(no_kontrak,9,1), " +
+                        "if(rayon = 'TS1' || rayon = 'TS2', substring(no_kontrak,9,1), " +
                             "substring(no_kontrak,9,2)) as afdeling, " +
                         "hk_bawah-hk_atas as selisih_hk, " +
                         "rend_bawah - rend_atas as selisih_rend, " +
@@ -111,7 +111,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                         "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
                     "on t1.kunci = t2.kunci " +
                     "where t1.rayon like ? and t1.tgl_analisa >= ? and t1.tgl_analisa <= ?" +
-                    "order by t1.ronde, t1.afdeling, t1.no_petak";
+                    "order by t1.ronde, t1.afdeling, t1.masa_tanam, t1.no_petak";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "TS%");
             ps.setDate(2, tglAwal);
@@ -152,7 +152,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                         "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
                     "on t1.kunci = t2.kunci " +
                     "where t1.rayon like ? and t1.tgl_analisa = ? " +
-                    "order by t1.ronde, t1.afdeling, t1.no_petak";
+                    "order by t1.ronde, t1.afdeling, t1.masa_tanam, t1.no_petak";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "TR%");
             ps.setDate(2, tglAnalisa);
@@ -191,7 +191,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                         "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
                     "on t1.kunci = t2.kunci " +
                     "where t1.rayon like ? and t1.tgl_analisa >= ? and t1.tgl_analisa <= ?" +
-                    "order by t1.ronde, t1.afdeling, t1.no_petak";
+                    "order by t1.ronde, t1.afdeling, t1.masa_tanam, t1.no_petak";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "TR%");
             ps.setDate(2, tglAwal);

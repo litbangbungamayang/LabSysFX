@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -229,6 +231,8 @@ public class AnalisaKemasakanController implements Initializable {
     private PetakKebun petakKebun;
     
     private int jenisAnalisa = -1;
+    
+    private int no_sampel = 1;
     
     private MainApp mainApp;
     
@@ -615,6 +619,8 @@ public class AnalisaKemasakanController implements Initializable {
         dataAnalisa.clear();
         listDataFisik.clear();
         dataFisik.clear();
+        no_sampel = 1;
+        txtNoSampel.setText(String.valueOf(no_sampel));
     }
     
     public void resetField(){
@@ -1088,6 +1094,8 @@ public class AnalisaKemasakanController implements Initializable {
         });
         btnTambahSampel.setOnAction((event) -> {
             resetField();
+            no_sampel++;
+            txtNoSampel.setText(String.valueOf(no_sampel));
             titPaneInputData.setExpanded(true);
         });
         btnBatal.setOnAction((event) -> {
@@ -1108,6 +1116,8 @@ public class AnalisaKemasakanController implements Initializable {
             if (tvHasil.getSelectionModel().getSelectedIndex() > -1 && 
                     alert.showConfirmation("Anda yakin akan menghapus data ini?")){
                 dataAnalisa.remove(tvHasil.getSelectionModel().getSelectedIndex());
+                if (no_sampel < 1) no_sampel--;
+                txtNoSampel.setText(String.valueOf(no_sampel));
                 refreshTabelHasil();
             }
         });
@@ -1120,7 +1130,8 @@ public class AnalisaKemasakanController implements Initializable {
         btnSimpan.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
         btnTambahSampel.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
         btnHapusFisik.disableProperty().bind(Bindings.size(dataFisikTemp).lessThan(1));
-        txtNoSampel.textProperty().bind(Bindings.size(dataAnalisa).add(1).asString());
+        //txtNoSampel.textProperty().bind(Bindings.size(dataAnalisa).add(1).asString());
+        //txtNoSampel.textProperty().bind(no_sampel.asString());
         txtLabelRonde.textProperty().bind(txtRonde.textProperty());
         btnHapusAnalisa.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));
         dtpTglLaporanAkhir.disableProperty().bind(Bindings.not(chkLaporanSd.selectedProperty()));

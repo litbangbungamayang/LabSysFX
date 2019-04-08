@@ -9,13 +9,17 @@ import com.jfoenix.controls.JFXButton;
 import id.buma.labsysfx.MainApp;
 import id.buma.labsysfx.dao.AdminPageDAOSQL;
 import id.buma.labsysfx.model.UserLab;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableObjectValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,6 +32,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.apache.commons.io.FileUtils;
+
 
 /**
  *
@@ -37,6 +43,7 @@ import javafx.scene.text.Text;
 
 public class MainScreenController implements Initializable {
     
+//<editor-fold defaultstate="collapsed" desc="FXML Library">
     @FXML
     private TextField txtUsername;
     @FXML
@@ -67,6 +74,7 @@ public class MainScreenController implements Initializable {
     private HBox hboxUsername;
     @FXML
     private VBox vboxAdmin;
+//</editor-fold>
     
     public UserLab userLab;
     
@@ -95,6 +103,26 @@ public class MainScreenController implements Initializable {
         return tabMainMenu;
     }
     
+    public void testDownloadBinaries(){
+        try {
+            String url = "https://drive.google.com/open?id=1mIP1RxfvLa16Dtd8fZ508rQYQM2D4kpV";
+            String url2 = "https://drive.google.com/uc?export=download&confirm=it_O&id=1mIP1RxfvLa16Dtd8fZ508rQYQM2D4kpV";
+            String url3 = "https://github.com/litbangbungamayang/LabSysFX/releases/download/untagged-11de29b93ba014f09915/commons-io-2.6.jar";
+            String url4 = "https://drive.google.com/uc?export=download&confirm=it_O&id=1z2sJLO5tzFvURO2wqQvki4NDUGSAhTlZ";
+            String workingDir = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toString()).getParent();
+            URL alamat = new URL(url3);
+            CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+            File jarFile = new File(cs.getLocation().toURI().getPath());
+            String jarDir = jarFile.getParentFile().getPath();
+            File file = new File(jarDir + "/lib/test-download.jar");
+            //FileUtils.copyURLToFile(alamat, file);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | URISyntaxException ex) {
+            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         btnOK.setOnAction(((event) -> {
@@ -105,7 +133,9 @@ public class MainScreenController implements Initializable {
                 if (userLab != null){
                     lblUsername.setText(userLab.getNamaUser());
                     hboxUsername.setVisible(true);
-                    tabPane.getSelectionModel().select(tabMainMenu);   
+                    tabPane.getSelectionModel().select(tabMainMenu);
+                    testDownloadBinaries();
+                    //alert.showInfoAlert(Paths.get("").toAbsolutePath().toString());
                     if (!userLab.getRole().equals("ADM")){
                         vboxAdmin.setVisible(false);
                     } else {
