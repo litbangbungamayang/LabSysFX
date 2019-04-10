@@ -57,8 +57,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
                         "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
                         "petak.rayon, petak.varietas, varietas.nama_varietas, " +
-                        "if(rayon = 'TS1' || rayon = 'TS2', substring(no_kontrak,9,1), " +
-                            "substring(no_kontrak,9,2)) as afdeling, " +
+                        "if(length(no_kontrak) = 15, substring(no_kontrak,9,1) * 1, " +
+                            "substring(no_kontrak,9,2) * 1) as afdeling, " +
                         "hk_bawah-hk_atas as selisih_hk, " +
                         "rend_bawah - rend_atas as selisih_rend, " +
                         "1 as kunci " +
@@ -71,7 +71,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                         "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
                     "on t1.kunci = t2.kunci " +
                     "where t1.rayon like ? and t1.tgl_analisa = ? " +
-                    "order by t1.ronde, t1.afdeling, t1.masa_tanam, t1.no_petak";
+                    "order by t1.ronde, t1.rayon, t1.afdeling, t1.masa_tanam, t1.no_petak";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "TS%");
             ps.setDate(2, tglAnalisa);
@@ -97,8 +97,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
                         "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
                         "petak.rayon, petak.varietas, varietas.nama_varietas, " +
-                        "if(rayon = 'TS1' || rayon = 'TS2', substring(no_kontrak,9,1), " +
-                            "substring(no_kontrak,9,2)) as afdeling, " +
+                        "if(length(no_kontrak) = 15, substring(no_kontrak,9,1) * 1, " +
+                            "substring(no_kontrak,9,2) * 1) as afdeling, " +
                         "hk_bawah-hk_atas as selisih_hk, " +
                         "rend_bawah - rend_atas as selisih_rend, " +
                         "1 as kunci " +
@@ -111,7 +111,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                         "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
                     "on t1.kunci = t2.kunci " +
                     "where t1.rayon like ? and t1.tgl_analisa >= ? and t1.tgl_analisa <= ?" +
-                    "order by t1.ronde, t1.afdeling, t1.masa_tanam, t1.no_petak";
+                    "order by t1.ronde, t1.rayon, t1.afdeling, t1.masa_tanam, t1.no_petak";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "TS%");
             ps.setDate(2, tglAwal);
@@ -152,7 +152,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                         "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
                     "on t1.kunci = t2.kunci " +
                     "where t1.rayon like ? and t1.tgl_analisa = ? " +
-                    "order by t1.ronde, t1.afdeling, t1.masa_tanam, t1.no_petak";
+                    "order by t1.ronde, t1.rayon, t1.afdeling, t1.masa_tanam, t1.no_petak";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "TR%");
             ps.setDate(2, tglAnalisa);
@@ -205,6 +205,86 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
             alert.showErrorAlert("Error executing laporanPeriodeTR method!\nError code :\n" + ex.toString());
+        }
+        return jp;
+    }
+
+    @Override
+    public JasperPrint laporanHarianTsi(Date tglAnalisa) {
+        JasperPrint jp = null;
+        try (Connection conn = DB.getConn()){
+            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTSI.jasper");
+            String sql =
+                    "select * from " +
+                    "(select ankem.*, petak.kategori, petak.luas_petak, " +
+                        "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
+                        "petak.rayon, petak.varietas, varietas.nama_varietas, " +
+                        "if(length(no_kontrak) = 15, substring(no_kontrak,9,1) * 1, " +
+                            "substring(no_kontrak,9,2) * 1) as afdeling, " +
+                        "hk_bawah-hk_atas as selisih_hk, " +
+                        "rend_bawah - rend_atas as selisih_rend, " +
+                        "1 as kunci " +
+                        "from tbl_analisa_kemasakan ankem " +
+                        "join tbl_master_petak petak on ankem.kode_petak = petak.kode_petak " +
+                        "join tbl_varietas varietas on petak.varietas = varietas.id_varietas) as t1 " +
+                    "join " +
+                    "(select tuser.nama_user, " +
+                        "1 as kunci " +
+                        "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
+                    "on t1.kunci = t2.kunci " +
+                    "where (t1.rayon = 'BEKRI' or t1.rayon = 'TUBU') and t1.tgl_analisa = ? " +
+                    "order by t1.ronde, t1.rayon, t1.afdeling, t1.masa_tanam, t1.no_petak";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setDate(1, tglAnalisa);
+            ResultSet rs = ps.executeQuery();
+            JRDataSource jrds = new JRResultSetDataSource(rs);
+            Map map = new HashMap();
+            map.put("tgl_awal", tglAnalisa);
+            jp = JasperFillManager.fillReport(fileName, map, jrds);
+        } catch (SQLException|JRException ex){
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing laporanHarianTSI method!\nError code :\n" + ex.toString());
+        }
+        return jp;
+    }
+
+    @Override
+    public JasperPrint laporanPeriodeTsi(Date tglAwal, Date tglAkhir) {
+        JasperPrint jp = null;
+        try (Connection conn = DB.getConn()){
+            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTSI.jasper");
+            String sql =
+                    "select * from " +
+                    "(select ankem.*, petak.kategori, petak.luas_petak, " +
+                        "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
+                        "petak.rayon, petak.varietas, varietas.nama_varietas, " +
+                        "if(length(no_kontrak) = 15, substring(no_kontrak,9,1) * 1, " +
+                            "substring(no_kontrak,9,2) * 1) as afdeling, " +
+                        "hk_bawah-hk_atas as selisih_hk, " +
+                        "rend_bawah - rend_atas as selisih_rend, " +
+                        "1 as kunci " +
+                        "from tbl_analisa_kemasakan ankem " +
+                        "join tbl_master_petak petak on ankem.kode_petak = petak.kode_petak " +
+                        "join tbl_varietas varietas on petak.varietas = varietas.id_varietas) as t1 " +
+                    "join " +
+                    "(select tuser.nama_user, " +
+                        "1 as kunci " +
+                        "from tbl_user tuser where tuser.bagian = 'LTB' and tuser.role = 'ASKEP') as t2 " +
+                    "on t1.kunci = t2.kunci " +
+                    "where (t1.rayon = 'BEKRI' or t1.rayon = 'TUBU') and t1.tgl_analisa >= ? and t1.tgl_analisa <= ?" +
+                    "order by t1.ronde, t1.rayon, t1.afdeling, t1.masa_tanam, t1.no_petak";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setDate(1, tglAwal);
+            ps.setDate(2, tglAkhir);
+            ResultSet rs = ps.executeQuery();
+            JRDataSource jrds = new JRResultSetDataSource(rs);
+            Map map = new HashMap();
+            map.put("tgl_awal", tglAwal);
+            map.put("tgl_akhir", tglAkhir);
+            jp = JasperFillManager.fillReport(fileName, map, jrds);
+        } catch (SQLException|JRException ex){
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing laporanPeriodeTSI method!\nError code :\n" + ex.toString());
         }
         return jp;
     }

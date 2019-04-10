@@ -5,6 +5,7 @@
  */
 package id.buma.labsysfx.dao;
 
+import id.buma.labsysfx.model.UpdateFile;
 import id.buma.labsysfx.model.UserLab;
 
 /**
@@ -16,6 +17,8 @@ import id.buma.labsysfx.model.UserLab;
 public interface AdminPageDAO {
     
     public UserLab getLogin(String username, String password);
+    
+    public UpdateFile getUpdatePath();
     
     
 }

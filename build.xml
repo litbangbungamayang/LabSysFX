@@ -62,11 +62,12 @@
             <zipgroupfileset dir="dist/lib" includes="*.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
+                <attribute name="Implementation-Version" value="1.0.0-alpha+201904102153"/>
             </manifest>
         </jar>
         <zip destfile="${store.jar}">
             <zipfileset src="${store.dir}/temp_final.jar"
-            excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+            excludes = "META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA" />
         </zip>
         <delete file="${store.dir}/temp_final.jar"/>
     </target>

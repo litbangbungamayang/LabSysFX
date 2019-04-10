@@ -5,13 +5,20 @@
  */
 package id.buma.labsysfx.dao;
 
+import com.sun.deploy.util.StringUtils;
 import id.buma.labsysfx.controller.ErrorMessages;
 import id.buma.labsysfx.database.DB;
+import id.buma.labsysfx.model.UpdateFile;
 import id.buma.labsysfx.model.UserLab;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import net.sf.jasperreports.functions.standard.TextFunctions;
+import org.apache.poi.util.StringUtil;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  *
@@ -50,6 +57,34 @@ public class AdminPageDAOSQL implements AdminPageDAO {
             alert.showErrorAlert("Error getLogin!\nError code : " + ex.toString());
         }
         return userLab;
+    }
+
+    @Override
+    public UpdateFile getUpdatePath() {
+        UpdateFile update = null;
+        String sql = "select * from tbl_file";
+        try (Connection conn = DB.getConn()){
+            String pattern = "yyyyMMddHHmm";
+            org.joda.time.format.DateTimeFormatter daf = DateTimeFormat.forPattern(pattern);
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                String version = rs.getString("version");
+                String dateVersion = version.substring(version.length()-12);
+                DateTime dt = daf.parseDateTime(dateVersion);
+                update = new UpdateFile(
+                        rs.getString("fileName"), 
+                        rs.getString("version"), 
+                        dt, 
+                        rs.getString("urgency"), 
+                        rs.getString("checksum")
+                );
+            }
+            return update;
+        } catch (SQLException ex) {
+            alert.showErrorAlert("Error getUpdatePath!\nError code : " + ex.toString());
+        }
+        return update;
     }
     
 }

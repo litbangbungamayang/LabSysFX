@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -560,7 +558,7 @@ public class AnalisaKemasakanController implements Initializable {
         JFXAutoCompletePopup<String> autoCompleteTstr = new JFXAutoCompletePopup<>();
         autoCompleteJenis.getSuggestions().addAll("Analisa Rutin", "Analisa Tebu Bakar", "Analisa Tebu Percobaan");
         autoCompletePetak.getSuggestions().addAll(listPopUpPetak);
-        autoCompleteTstr.getSuggestions().addAll("TS", "TR");
+        autoCompleteTstr.getSuggestions().addAll("TS", "TR", "TSI");
         autoCompleteJenis.cellLimitProperty().setValue(3);
         autoCompletePetak.cellLimitProperty().setValue(10);
         /* Handler untuk jenis analisa */
@@ -1011,6 +1009,21 @@ public class AnalisaKemasakanController implements Initializable {
                 if (dtpTglLaporanAkhir.getValue() != null){
                     java.sql.Date tglAwal = java.sql.Date.valueOf(dtpTglLaporanAwal.getValue());
                     java.sql.Date tglAkhir = java.sql.Date.valueOf(dtpTglLaporanAkhir.getValue());
+                    switch (txtLaporanTstr.getText()){
+                        case "TS" :
+                            JasperPrint jp = reportsDao.laporanPeriodeTs(tglAwal, tglAkhir);
+                            JasperViewer.viewReport(jp, false);
+                            break;
+                        case "TR" :
+                            jp = reportsDao.laporanPeriodeTr(tglAwal, tglAkhir);
+                            JasperViewer.viewReport(jp,false);
+                            break;
+                        case "TSI" :
+                            jp = reportsDao.laporanPeriodeTsi(tglAwal, tglAkhir);
+                            JasperViewer.viewReport(jp,false);
+                            break;
+                    }
+                    /*
                     if (txtLaporanTstr.getText().equals("TS")){
                         JasperPrint jp = reportsDao.laporanPeriodeTs(tglAwal, tglAkhir);
                         JasperViewer.viewReport(jp, false);
@@ -1020,10 +1033,27 @@ public class AnalisaKemasakanController implements Initializable {
                             JasperViewer.viewReport(jp,false);
                         }
                     }
+                    */
                 } else {
                     alert.showErrorAlert("Tanggal sampai dengan laporan belum dipilih!");
                 }
             } else {
+                java.sql.Date tglAwal = java.sql.Date.valueOf(dtpTglLaporanAwal.getValue());
+                switch (txtLaporanTstr.getText()){
+                    case "TS" :
+                        JasperPrint jp = reportsDao.laporanHarianTs(tglAwal);
+                        JasperViewer.viewReport(jp, false);
+                        break;
+                    case "TR" :
+                        jp = reportsDao.laporanHarianTr(tglAwal);
+                        JasperViewer.viewReport(jp,false);
+                        break;
+                    case "TSI" :
+                        jp = reportsDao.laporanHarianTsi(tglAwal);
+                        JasperViewer.viewReport(jp,false);
+                        break;
+                }
+                /*
                 if (txtLaporanTstr.getText().equals("TS")){
                     JasperPrint jp = reportsDao.laporanHarianTs(java.sql.Date.valueOf(dtpTglLaporanAwal.getValue()));
                     JasperViewer.viewReport(jp, false);
@@ -1033,6 +1063,7 @@ public class AnalisaKemasakanController implements Initializable {
                         JasperViewer.viewReport(jp, false);
                     }
                 }
+                */
             }
         } else {
             if (dtpTglLaporanAwal.getValue() == null) alert.showErrorAlert("Tanggal laporan belum dipilih!");
