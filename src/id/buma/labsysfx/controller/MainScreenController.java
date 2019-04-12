@@ -21,14 +21,22 @@ import java.nio.file.Files;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -37,6 +45,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -85,6 +94,7 @@ public class MainScreenController implements Initializable {
     private Text lblVersion;
 //</editor-fold>
     
+//<editor-fold defaultstate="collapsed" desc="Deklarasi">
     public UserLab userLab;
     
     public final AdminPageDAOSQL adminPageDao = new AdminPageDAOSQL();
@@ -95,7 +105,9 @@ public class MainScreenController implements Initializable {
     
     public MainScreenController(){
     }
+//</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="Methods Library">
     public void setMainApp(MainApp mainApp){
         this.mainApp = mainApp;
     }
@@ -160,7 +172,100 @@ public class MainScreenController implements Initializable {
         }
     }
     
-    private Task<Void> downloadUpdate(UpdateFile update){
+    public void checkUpdate() {
+        final Dialog<Boolean> pop = alert.showWaitDialog("Mengecek pembaruan aplikasi. Mohon tunggu.");
+        pop.show();
+        UpdateFile update = adminPageDao.getUpdatePath();
+        PauseTransition delay = new PauseTransition(Duration.seconds(5));
+        delay.setOnFinished((event) -> {
+            pop.setResult(Boolean.TRUE);
+            String thisVersion = getClass().getPackage().getImplementationVersion();
+            String pattern = "yyyyMMddHHmm";
+            org.joda.time.format.DateTimeFormatter daf = DateTimeFormat.forPattern(pattern);
+            String thisDateVersion = thisVersion.substring(thisVersion.length()-12);
+            DateTime dt = daf.parseDateTime(thisDateVersion);
+        });
+        delay.play();
+    }
+    
+    public Task<Void> updateCheck(Dialog<Boolean> popAlert){
+        Task<Void> tUpdate = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                UpdateFile update = adminPageDao.getUpdatePath();
+                String thisVersion = getClass().getPackage().getImplementationVersion();
+                String pattern = "yyyyMMddHHmm";
+                org.joda.time.format.DateTimeFormatter daf = DateTimeFormat.forPattern(pattern);
+                String thisDateVersion = thisVersion.substring(thisVersion.length()-12);
+                DateTime dt = daf.parseDateTime(thisDateVersion);
+                Thread.sleep(5000);
+                Platform.runLater(() -> {
+                    if (thisVersion.equals(update.getVersion())){
+                        alert.showInfoAlert("Aplikasi tidak perlu diperbarui.");
+                    } else {
+                        if (dt.isBefore(update.getDateVersion())){
+                            if (update.getUrgency().equals("critical")){
+                                Dialog<Boolean> popDownload = alert.showWaitDialog("Mengunduh pembaruan. Mohon tunggu..");
+                                popDownload.show();
+                                Thread downloadThread = new Thread(downloadUpdateFile(popDownload, update));
+                                downloadThread.start();
+                            } else {
+                                Dialog<Boolean> popDownload = alert.showWaitDialog("Mengunduh pembaruan. Mohon tunggu..");
+                                Thread downloadThread = new Thread(downloadUpdateFile(popDownload, update));
+                                downloadThread.start();
+                            }
+                        }
+                    }
+                });
+                return null;
+            }
+        };
+        tUpdate.setOnSucceeded((event) -> {
+            popAlert.setResult(Boolean.TRUE);
+        });
+        return tUpdate;
+    }
+    
+    private Task<Void> downloadUpdateFile(Dialog<Boolean> popDownload, UpdateFile updateFile){
+        Task<Void> downloading = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Platform.runLater(() -> {
+                    try {
+                        String webBcn = "http://apps.bcn.web.id/commons-io-2.6.jar";
+                        URL alamat = new URL(webBcn);
+                        CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+                        File jarFile = new File(cs.getLocation().toURI().getPath());
+                        String jarDir = jarFile.getParentFile().getPath();
+                        File file = new File(jarDir + "/LabSysFX-update.jar");
+                        File oldFile = new File(jarDir + "/LabSysFX.jar");
+                        FileUtils.copyURLToFile(alamat, file, 10000, 10000);
+                        if (updateFile.getChecksum().equals(getMD5(file))){
+                            System.out.println("Download finished!");
+                            Files.move(oldFile.toPath(), oldFile.toPath().resolveSibling("LabSysFX" + 
+                                    getClass().getPackage().getImplementationVersion() + ".jar"));
+                            Files.move(file.toPath(), file.toPath().resolveSibling("LabSysFX.jar"));
+                            if (updateFile.getUrgency().equals("critical")){
+                                alert.showErrorAlert("Aplikasi akan menutup untuk memasang pembaruan. Silahkan jalankan ulang aplikasi.");
+                                System.exit(0);
+                            }
+                        }
+                    } catch (MalformedURLException ex) {
+                        Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (URISyntaxException | IOException ex) {
+                        Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+                return null;
+            }
+        };
+        downloading.setOnSucceeded((event) -> {
+            popDownload.setResult(Boolean.TRUE);
+        });
+        return downloading;
+    }
+   
+    private Task<Void> downloadUpdate2(UpdateFile update){
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -180,7 +285,7 @@ public class MainScreenController implements Initializable {
                         Files.move(oldFile.toPath(), oldFile.toPath().resolveSibling("LabSysFX-oldxxx.jar"));
                         Files.move(file.toPath(), file.toPath().resolveSibling("LabSysFX.jar"));
                         if (update.getUrgency().equals("critical")){
-                            System.exit(0);
+                            //System.exit(0);
                         }
                         notify();
                     } catch (MalformedURLException ex) {
@@ -189,48 +294,14 @@ public class MainScreenController implements Initializable {
                         Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
                         System.out.println("Download Failed!");
                     }
-                        return null;
-                    }
-            }
-        };
-        return task;
-    }
-    
-    private Task<Void> checkForUpdate(){
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                UpdateFile update = adminPageDao.getUpdatePath();
-                System.out.println(update.getUrgency());
-                String thisVersion = getClass().getPackage().getImplementationVersion();
-                String pattern = "yyyyMMddHHmm";
-                org.joda.time.format.DateTimeFormatter daf = DateTimeFormat.forPattern(pattern);
-                String thisDateVersion = thisVersion.substring(thisVersion.length()-12);
-                DateTime dt = daf.parseDateTime(thisDateVersion);
-                if (thisVersion.equals(update.getVersion())){
-                    System.out.println("No need to update!");
-                } else {
-                    System.out.println("Update required!");
-                    System.out.println("This version timestamp : " + dt.toString());
-                    System.out.println("Available version timestamp : " + update.getDateVersion().toString());
-                    if (dt.isBefore(update.getDateVersion())){
-                        Thread download = new Thread(downloadUpdate(update));
-                        download.start();
-                        synchronized(download){
-                           try {
-                               System.out.println("Downloading file...");
-                               download.wait();
-                           } catch (InterruptedException ie){
-                               
-                           }
-                        }
-                    }
                 }
                 return null;
             }
         };
         return task;
     }
+
+//</editor-fold>
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -246,8 +317,6 @@ public class MainScreenController implements Initializable {
                     lblUsername.setText(userLab.getNamaUser());
                     hboxUsername.setVisible(true);
                     tabPane.getSelectionModel().select(tabMainMenu);
-                    Thread updateChecker = new Thread(checkForUpdate());
-                    //updateChecker.start();
                     if (!userLab.getRole().equals("ADM")){
                         vboxAdmin.setVisible(false);
                     } else {
@@ -256,9 +325,11 @@ public class MainScreenController implements Initializable {
                 } else {
                     alert.showErrorAlert("Username atau password tidak cocok!");
                 }
-                
+                Dialog<Boolean> pop = alert.showWaitDialog("Mengecek pembaruan aplikasi. Mohon tunggu.");
+                pop.show();
+                Thread tCekUpdate = new Thread(updateCheck(pop));
+                tCekUpdate.start();
             }
-            
         }));
         btnAdmin.setOnAction((event) -> {
             try {

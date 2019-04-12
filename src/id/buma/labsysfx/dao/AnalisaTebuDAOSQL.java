@@ -198,12 +198,12 @@ public class AnalisaTebuDAOSQL implements AnalisaTebuDAO {
                     psAnalisa.execute();
                     psFisik.executeBatch();
                     conn.commit();
-                    return true;
                 } catch (SQLException ex) {
                     conn.rollback();
                     errMsg.showErrorAlert("Error DAO insertNewData!" + "\n" +
                             "Error code : " + ex.toString());
                     Logger.getLogger(AnalisaTebuDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+                    return false;
                 }
             }
             conn.setAutoCommit(true);
@@ -211,8 +211,9 @@ public class AnalisaTebuDAOSQL implements AnalisaTebuDAO {
             errMsg.showErrorAlert("Error DAO insertNewData!" + "\n" + 
                     "Error code : " + ex.getMessage());
             Logger.getLogger(AnalisaTebuDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override
