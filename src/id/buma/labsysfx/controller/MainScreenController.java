@@ -232,7 +232,7 @@ public class MainScreenController implements Initializable {
             protected Void call() throws Exception {
                 Platform.runLater(() -> {
                     try {
-                        String webBcn = "http://apps.bcn.web.id/commons-io-2.6.jar";
+                        String webBcn = "http://apps.bcn.web.id/LabSysFX.jar";
                         URL alamat = new URL(webBcn);
                         CodeSource cs = getClass().getProtectionDomain().getCodeSource();
                         File jarFile = new File(cs.getLocation().toURI().getPath());
