@@ -736,6 +736,7 @@ public class AnalisaKemasakanController implements Initializable {
         Double rataPanjang = 0.00;
         int rataRuas = 0;
         Double rataDiameter = 0.00;
+        Double jmlPanjang = 0.00;
         int jmlData;
         if (!dataFisikTemp.isEmpty()){
             jmlData = dataFisikTemp.size();
@@ -744,11 +745,12 @@ public class AnalisaKemasakanController implements Initializable {
                 rataRuas = rataRuas + fisikBatang.getRuas();
                 rataDiameter = rataDiameter + fisikBatang.getDiameter();
             }
+            jmlPanjang = duaDesimalDouble(rataPanjang);
             rataPanjang = duaDesimalDouble(rataPanjang/jmlData);
             rataDiameter = duaDesimalDouble(rataDiameter/jmlData);
             rataRuas = Math.round(rataRuas/jmlData);
         }
-        FisikTebu rataFisik = new FisikTebu(rataPanjang, rataRuas, rataDiameter);
+        FisikTebu rataFisik = new FisikTebu(rataPanjang, rataRuas, rataDiameter, jmlPanjang);
         return rataFisik;
     }
     
@@ -866,7 +868,7 @@ public class AnalisaKemasakanController implements Initializable {
                 kdt = duaDesimalDouble((satuDesimalDouble((polBawah/brixBawah)*100)/
                         hkBawahLalu))*100;
             }
-            Double kgPerMeter = duaDesimalDouble((beratNiraAtas + beratNiraTengah + beratNiraBawah)/rataFisik.getPanjang());
+            Double kgPerMeter = duaDesimalDouble((beratTebuAtas + beratTebuTengah + beratTebuBawah)/rataFisik.getJmlPanjang());
             /*
             ******
             */

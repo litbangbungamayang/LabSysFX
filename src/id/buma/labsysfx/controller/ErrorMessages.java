@@ -9,6 +9,7 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
@@ -62,7 +63,7 @@ public class ErrorMessages {
 
     public Alert showWaitAlert(String message){
         Alert alert = new Alert(Alert.AlertType.NONE);
-        alert.initStyle(StageStyle.UNDECORATED);
+        alert.initStyle(StageStyle.UNIFIED);
         alert.setTitle(null);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -71,11 +72,15 @@ public class ErrorMessages {
     
     public Dialog showWaitDialog(String message){
         Dialog<Boolean> dialog = new Dialog<>();
-        dialog.initStyle(StageStyle.UNDECORATED);
+        dialog.initStyle(StageStyle.UNIFIED);
         //dialog.setGraphic(new ImageView(getClass().getResource("assets/loading.gif").toString()));
-        dialog.setTitle(null);
-        dialog.setHeaderText(null);
-        dialog.setContentText(message);
+        //Image img = new Image("https://docs.oracle.com/en/dcommon/img/oracle-doc-logo.png");
+        Image img = new Image("id/buma/labsysfx/assets/loading-2.gif");
+        ImageView imgV = new ImageView(img);
+        dialog.setGraphic(imgV);
+        dialog.setTitle("Update Check");
+        dialog.setHeaderText(message);
+        dialog.setContentText(null);
         dialog.initModality(Modality.APPLICATION_MODAL);
         return dialog;
     }

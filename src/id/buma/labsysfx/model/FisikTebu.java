@@ -19,6 +19,7 @@ public class FisikTebu {
     private final DoubleProperty panjang;
     private final IntegerProperty ruas;
     private final DoubleProperty diameter;
+    private DoubleProperty jmlPanjang;
     
     public FisikTebu(){
         this(0.00, 0, 0.00);
@@ -28,6 +29,13 @@ public class FisikTebu {
         this.panjang = new SimpleDoubleProperty(panjang);
         this.ruas = new SimpleIntegerProperty(ruas);
         this.diameter = new SimpleDoubleProperty(diameter);
+    }
+    
+    public FisikTebu(Double rataPanjang, int ruas, Double diameter, Double jmlPanjang){
+        this.panjang = new SimpleDoubleProperty(rataPanjang);
+        this.ruas = new SimpleIntegerProperty(ruas);
+        this.diameter = new SimpleDoubleProperty(diameter);
+        this.jmlPanjang = new SimpleDoubleProperty(jmlPanjang);
     }
 
     public Double getPanjang(){
@@ -64,6 +72,22 @@ public class FisikTebu {
     
     public void setDiameter(Double diameter){
         this.diameter.set(diameter);
+    }
+    
+    public Double getJmlPanjang(){
+        return jmlPanjang.get();
+    }
+
+    public DoubleProperty getJmlPanjangProperty() {
+        return jmlPanjang;
+    }
+
+    public void setJmlPanjangProperty(DoubleProperty jmlPanjang) {
+        this.jmlPanjang = jmlPanjang;
+    }
+    
+    public void setJmlPanjang(Double jmlPanjang){
+        this.jmlPanjang.set(jmlPanjang);
     }
     
 }
