@@ -214,6 +214,10 @@ public class MainScreenController implements Initializable {
                                 Thread downloadThread = new Thread(downloadUpdateFile(popDownload, update));
                                 downloadThread.start();
                             }
+                        } else {
+                            if (dt.isAfter(update.getDateVersion())){
+                                alert.showErrorAlert("Versi aplikasi tidak konsisten!");
+                            }
                         }
                     }
                 });
@@ -239,20 +243,23 @@ public class MainScreenController implements Initializable {
                         String jarDir = jarFile.getParentFile().getPath();
                         File file = new File(jarDir + "/LabSysFX-update.jar");
                         File oldFile = new File(jarDir + "/LabSysFX.jar");
-                        FileUtils.copyURLToFile(alamat, file, 10000, 10000);
-                        if (updateFile.getChecksum().equals(getMD5(file))){
-                            System.out.println("Download finished!");
-                            Files.move(oldFile.toPath(), oldFile.toPath().resolveSibling("LabSysFX" + 
-                                    getClass().getPackage().getImplementationVersion() + ".jar"));
-                            Files.move(file.toPath(), file.toPath().resolveSibling("LabSysFX.jar"));
-                            if (updateFile.getUrgency().equals("critical")){
-                                alert.showErrorAlert("Aplikasi akan menutup untuk memasang pembaruan. Silahkan jalankan ulang aplikasi.");
-                                System.exit(0);
+                        try {
+                            FileUtils.copyURLToFile(alamat, file, 30000, 15000);
+                            if (updateFile.getChecksum().equals(getMD5(file))){
+                                System.out.println("Download finished!");
+                                Files.move(oldFile.toPath(), oldFile.toPath().resolveSibling("LabSysFX" + 
+                                        getClass().getPackage().getImplementationVersion() + ".jar"));
+                                Files.move(file.toPath(), file.toPath().resolveSibling("LabSysFX.jar"));
+                                if (updateFile.getUrgency().equals("critical")){
+                                    alert.showErrorAlert("Aplikasi akan menutup untuk memasang pembaruan. Silahkan jalankan ulang aplikasi.");
+                                    System.exit(0);
+                                }
                             }
-                        }
-                    } catch (MalformedURLException ex) {
-                        Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (URISyntaxException | IOException ex) {
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                            alert.showErrorAlert("Pembaruan tidak dapat diunduh!");
+                        }               
+                    } catch (MalformedURLException | URISyntaxException ex) {
                         Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });

@@ -72,7 +72,7 @@ public class ErrorMessages {
     
     public Dialog showWaitDialog(String message){
         Dialog<Boolean> dialog = new Dialog<>();
-        dialog.initStyle(StageStyle.UNIFIED);
+        dialog.initStyle(StageStyle.DECORATED);
         //dialog.setGraphic(new ImageView(getClass().getResource("assets/loading.gif").toString()));
         //Image img = new Image("https://docs.oracle.com/en/dcommon/img/oracle-doc-logo.png");
         Image img = new Image("id/buma/labsysfx/assets/loading-2.gif");

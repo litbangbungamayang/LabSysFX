@@ -8,6 +8,7 @@ package id.buma.labsysfx.dao;
 import id.buma.labsysfx.controller.ErrorMessages;
 import id.buma.labsysfx.database.DB;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -132,6 +133,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     @Override
     public JasperPrint laporanHarianTr(Date tglAnalisa) {
         JasperPrint jp = null;
+        BigDecimal bd = new BigDecimal(1);
         try (Connection conn = DB.getConn()){
             InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTR.jasper");
             String sql =
