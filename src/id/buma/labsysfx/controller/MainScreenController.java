@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template toBeDownloadedFile, choose Tools | Templates
  * and open the template in the editor.
  */
 package id.buma.labsysfx.controller;
@@ -14,30 +14,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -45,10 +48,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 
 /**
@@ -150,165 +153,177 @@ public class MainScreenController implements Initializable {
         }
         return md5;
     }
-    
-    public void testDownloadBinaries(){
-        try {
-            String url = "https://drive.google.com/open?id=1mIP1RxfvLa16Dtd8fZ508rQYQM2D4kpV";
-            String url2 = "https://drive.google.com/uc?export=download&confirm=it_O&id=1mIP1RxfvLa16Dtd8fZ508rQYQM2D4kpV";
-            String url3 = "https://github.com/litbangbungamayang/LabSysFX/releases/download/untagged-11de29b93ba014f09915/commons-io-2.6.jar";
-            String github = "https://github-production-release-asset-2e65be.s3.amazonaws.com/167989373/b5163f00-5a23-11e9-9b3f-800beb3ad24a?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20190409%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20190409T162120Z&X-Amz-Expires=300&X-Amz-Signature=25801ff18f35535bea9ef056003a9aa8e608ff5635cbe41757b3985b890bb90d&X-Amz-SignedHeaders=host&actor_id=28817280&response-content-disposition=attachment%3B%20filename%3Dcommons-io-2.6.jar&response-content-type=application%2Foctet-stream";
-            String url4 = "https://drive.google.com/uc?export=download&confirm=it_O&id=1qLV7vcCGbkL3ohhtSn1eZacBYlCb2ddi";
-            String workingDir = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toString()).getParent();
-            URL alamat = new URL(url3);
-            CodeSource cs = getClass().getProtectionDomain().getCodeSource();
-            File jarFile = new File(cs.getLocation().toURI().getPath());
-            String jarDir = jarFile.getParentFile().getPath();
-            File file = new File(jarDir + "/LabSysFX-update.jar");
-            FileUtils.copyURLToFile(alamat, file);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException | URISyntaxException ex) {
-            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public void checkUpdate() {
-        final Dialog<Boolean> pop = alert.showWaitDialog("Mengecek pembaruan aplikasi. Mohon tunggu.");
-        pop.show();
-        UpdateFile update = adminPageDao.getUpdatePath();
-        PauseTransition delay = new PauseTransition(Duration.seconds(5));
-        delay.setOnFinished((event) -> {
-            pop.setResult(Boolean.TRUE);
-            String thisVersion = getClass().getPackage().getImplementationVersion();
-            String pattern = "yyyyMMddHHmm";
-            org.joda.time.format.DateTimeFormatter daf = DateTimeFormat.forPattern(pattern);
-            String thisDateVersion = thisVersion.substring(thisVersion.length()-12);
-            DateTime dt = daf.parseDateTime(thisDateVersion);
-        });
-        delay.play();
-    }
-    
-    public Task<Void> updateCheck(Dialog<Boolean> popAlert){
-        Task<Void> tUpdate = new Task<Void>() {
+
+    private Task progressWatcher(File downloadedFile, long fileSize){
+        return new Task() {
+            
+            Dialog<Boolean> popUp = alert.showProgressDialog("Mengunduh pembaruan, mohon tunggu.", super.progressProperty());
+            
             @Override
-            protected Void call() throws Exception {
+            protected Object call() throws Exception {
+                while (downloadedFile.length() < fileSize){
+                    updateProgress(downloadedFile.length(), fileSize);
+                }
+                return true;
+            }
+
+            @Override
+            protected void running() {
+                super.running();
+                popUp.show();
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                popUp.setResult(Boolean.TRUE);
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                popUp.setResult(Boolean.TRUE);
+            }
+            
+        };
+    }
+    
+    private Task downloadWorker(URL alamat, File updateFile, long fileSize, File downloadedFile, Boolean isCritical){
+        return new Task() {
+            
+            @Override
+            protected Object call() throws Exception {
+                FileUtils.copyURLToFile(alamat, updateFile, 10000, 10000);
+                return true;
+            }
+
+            @Override
+            protected void running() {
+                super.running();
+                if (isCritical){
+                    Task progress = progressWatcher(downloadedFile, fileSize);
+                    new Thread(progress).start();
+                }
+            }
+
+        };
+    }
+    
+    private Task updateCheck(){
+        return new Task() {
+            @Override
+            protected Object call() {
+                Boolean isNeedUpdate;
+                Boolean isInconsistence;
+                Boolean isCritical;
                 UpdateFile update = adminPageDao.getUpdatePath();
                 String thisVersion = getClass().getPackage().getImplementationVersion();
                 String pattern = "yyyyMMddHHmm";
-                org.joda.time.format.DateTimeFormatter daf = DateTimeFormat.forPattern(pattern);
+                DateTimeFormatter daf = DateTimeFormat.forPattern(pattern);
                 String thisDateVersion = thisVersion.substring(thisVersion.length()-12);
-                DateTime dt = daf.parseDateTime(thisDateVersion);
-                Thread.sleep(5000);
-                Platform.runLater(() -> {
-                    if (thisVersion.equals(update.getVersion())){
-                        alert.showInfoAlert("Aplikasi tidak perlu diperbarui.");
-                    } else {
-                        if (dt.isBefore(update.getDateVersion())){
-                            if (update.getUrgency().equals("critical")){
-                                Dialog<Boolean> popDownload = alert.showWaitDialog("Mengunduh pembaruan. Mohon tunggu..");
-                                popDownload.show();
-                                Thread downloadThread = new Thread(downloadUpdateFile(popDownload, update));
-                                downloadThread.start();
-                            } else {
-                                Dialog<Boolean> popDownload = alert.showWaitDialog("Mengunduh pembaruan. Mohon tunggu..");
-                                Thread downloadThread = new Thread(downloadUpdateFile(popDownload, update));
-                                downloadThread.start();
-                            }
-                        } else {
-                            if (dt.isAfter(update.getDateVersion())){
-                                alert.showErrorAlert("Versi aplikasi tidak konsisten!");
-                            }
-                        }
-                    }
-                });
-                return null;
-            }
-        };
-        tUpdate.setOnSucceeded((event) -> {
-            popAlert.setResult(Boolean.TRUE);
-        });
-        return tUpdate;
-    }
-    
-    private Task<Void> downloadUpdateFile(Dialog<Boolean> popDownload, UpdateFile updateFile){
-        Task<Void> downloading = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Platform.runLater(() -> {
+                DateTime thisDateTime = daf.parseDateTime(thisDateVersion);
+                isNeedUpdate = thisDateTime.isBefore(update.getDateVersion());
+                isInconsistence = thisDateTime.isAfter(update.getDateVersion());
+                isCritical = update.getUrgency().equals("critical");
+                // FOR TESTING
+                //isNeedUpdate = true;
+                //============
+                if (isNeedUpdate){
                     try {
-                        String webBcn = "http://apps.bcn.web.id/LabSysFX.jar";
-                        URL alamat = new URL(webBcn);
+                        String updateUrl = "http://apps.bcn.web.id/LabSysFX.jar";
+                        URL alamat = new URL(updateUrl);
+                        URLConnection conn = alamat.openConnection();
+                        ((HttpURLConnection) conn).setRequestMethod("HEAD");
+                        conn.getInputStream();
+                        int fileSize = conn.getContentLength();
                         CodeSource cs = getClass().getProtectionDomain().getCodeSource();
                         File jarFile = new File(cs.getLocation().toURI().getPath());
                         String jarDir = jarFile.getParentFile().getPath();
-                        File file = new File(jarDir + "/LabSysFX-update.jar");
-                        File oldFile = new File(jarDir + "/LabSysFX.jar");
-                        try {
-                            FileUtils.copyURLToFile(alamat, file, 30000, 15000);
-                            if (updateFile.getChecksum().equals(getMD5(file))){
-                                System.out.println("Download finished!");
-                                Files.move(oldFile.toPath(), oldFile.toPath().resolveSibling("LabSysFX" + 
-                                        getClass().getPackage().getImplementationVersion() + ".jar"));
-                                Files.move(file.toPath(), file.toPath().resolveSibling("LabSysFX.jar"));
-                                if (updateFile.getUrgency().equals("critical")){
-                                    alert.showErrorAlert("Aplikasi akan menutup untuk memasang pembaruan. Silahkan jalankan ulang aplikasi.");
-                                    System.exit(0);
+                        File toDownload = new File(jarDir + "/apps_update.jar");
+                        Task downloadWorker = downloadWorker(alamat, toDownload, 
+                                fileSize, toDownload, isCritical);
+                        downloadWorker.setOnSucceeded((event) -> {
+                            // TODO Cek MD5 hash
+                            if (update.getChecksum().equals(getMD5(toDownload))){
+                                if (isCritical){
+                                    File updaterFile = new File(jarDir + "/Updater.jar");
+                                    alert.showInfoAlert("Aplikasi akan menutup untuk memasang pembaruan!");
+                                    Platform.exit();
+                                    callJar(updaterFile);
+                                } else {
+                                    mainApp.update = true;
                                 }
                             }
-                        } catch (IOException ex) {
-                            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-                            alert.showErrorAlert("Pembaruan tidak dapat diunduh!");
-                        }               
-                    } catch (MalformedURLException | URISyntaxException ex) {
-                        Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                });
-                return null;
-            }
-        };
-        downloading.setOnSucceeded((event) -> {
-            popDownload.setResult(Boolean.TRUE);
-        });
-        return downloading;
-    }
-   
-    private Task<Void> downloadUpdate2(UpdateFile update){
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                synchronized(this){
-                    try {
-                        ErrorMessages em = new ErrorMessages();
-                        String webBcn = "http://apps.bcn.web.id/commons-io-2.6.jar";
-                        URL alamat = new URL(webBcn);
-                        CodeSource cs = getClass().getProtectionDomain().getCodeSource();
-                        File jarFile = new File(cs.getLocation().toURI().getPath());
-                        String jarDir = jarFile.getParentFile().getPath();
-                        File file = new File(jarDir + "/LabSysFX-update.jar");
-                        File oldFile = new File(jarDir + "/LabSysFX.jar");
-                        FileUtils.copyURLToFile(alamat, file, 10000, 10000);
-                        System.out.println("Download finished!");
-                        System.out.println(getMD5(file));
-                        Files.move(oldFile.toPath(), oldFile.toPath().resolveSibling("LabSysFX-oldxxx.jar"));
-                        Files.move(file.toPath(), file.toPath().resolveSibling("LabSysFX.jar"));
-                        if (update.getUrgency().equals("critical")){
-                            //System.exit(0);
-                        }
-                        notify();
+                        });
+                        downloadWorker.setOnFailed((event) -> {
+                            alert.showErrorAlert("Pembaruan aplikasi gagal!");
+                        });
+                        new Thread(downloadWorker).start();
                     } catch (MalformedURLException ex) {
                         Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException | URISyntaxException ex) {
                         Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-                        System.out.println("Download Failed!");
                     }
                 }
-                return null;
+                return true;
             }
         };
-        return task;
     }
-
-//</editor-fold>
+    
+    private Boolean cekFileUpdater(){
+        try {
+            CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+            File jarFile = new File(cs.getLocation().toURI().getPath());
+            String jarDir = jarFile.getParentFile().getPath();
+            File file = new File(jarDir + "/Updater.jar");
+            if (Files.exists(file.toPath())){
+                return true;
+            }
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    private void runningUpdater(){
+        try {
+            CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+            File jarFile = new File(cs.getLocation().toURI().getPath());
+            String jarDir = jarFile.getParentFile().getPath();
+            File file = new File(jarDir + "/Updater.jar");
+            ProcessBuilder pb = new ProcessBuilder("java", "-jar", file.toString());
+            Process p = pb.start();
+        } catch (URISyntaxException | IOException ex) {
+            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void callJar(File updaterFile){
+        try {
+            JarFile jarFile = null;
+            String mainClass = null;
+            try {
+                jarFile = new JarFile(updaterFile);
+                final Manifest manifest = jarFile.getManifest();
+                mainClass = manifest.getMainAttributes().getValue("Main-Class");
+            } catch (IOException ex) {
+                Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    jarFile.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            final URLClassLoader child = new URLClassLoader(new URL[]{updaterFile.toURI().toURL()},this.getClass().getClassLoader());
+            final Class classToLoad = Class.forName(mainClass, true, child);
+            final Method method = classToLoad.getDeclaredMethod("main", String[].class);
+            final Object[] arguments = {new String[0]};
+            method.invoke(null, arguments);
+        } catch (MalformedURLException | ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -320,7 +335,7 @@ public class MainScreenController implements Initializable {
                 String username = txtUsername.getText();
                 String password = txtPassword.getText();
                 userLab = adminPageDao.getLogin(username, password);
-                if (userLab != null){
+                if (userLab != null && cekFileUpdater()){
                     lblUsername.setText(userLab.getNamaUser());
                     hboxUsername.setVisible(true);
                     tabPane.getSelectionModel().select(tabMainMenu);
@@ -329,13 +344,12 @@ public class MainScreenController implements Initializable {
                     } else {
                         vboxAdmin.setVisible(true);
                     }
+                    Thread tUpdateCheck = new Thread(updateCheck());
+                    tUpdateCheck.start();
                 } else {
-                    alert.showErrorAlert("Username atau password tidak cocok!");
+                    if(userLab == null) alert.showErrorAlert("Username atau password tidak cocok!");
+                    if(!cekFileUpdater()) alert.showErrorAlert("File Updater.jar tidak ada!");
                 }
-                Dialog<Boolean> pop = alert.showWaitDialog("Mengecek pembaruan aplikasi. Mohon tunggu.");
-                pop.show();
-                Thread tCekUpdate = new Thread(updateCheck(pop));
-                tCekUpdate.start();
             }
         }));
         btnAdmin.setOnAction((event) -> {
@@ -353,7 +367,7 @@ public class MainScreenController implements Initializable {
             }
         });
         btnCancel.setOnAction((event) -> {
-            System.exit(0);
+            Platform.exit();
         });
         btnLogout.setOnAction((event) -> {
             userLab = null;

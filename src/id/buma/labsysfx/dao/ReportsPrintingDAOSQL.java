@@ -7,8 +7,11 @@ package id.buma.labsysfx.dao;
 
 import id.buma.labsysfx.controller.ErrorMessages;
 import id.buma.labsysfx.database.DB;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -52,7 +55,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanHarianTs(Date tglAnalisa) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTS.jasper");
+            //InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTS.jasper");
+            InputStream fileName = new URL("http://apps.bcn.web.id/reports/LaporanHarianTS.jasper").openStream();
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -84,6 +88,10 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
             alert.showErrorAlert("Error executing laporanHarianTS method!\nError code :\n" + ex.toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         return jp;
     }
@@ -92,7 +100,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanPeriodeTs(Date tglAwal, Date tglAkhir) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTS.jasper");
+            //InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTS.jasper");
+            InputStream fileName = new URL("http://apps.bcn.web.id/reports/LaporanPeriodeTS.jasper").openStream();
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -126,6 +135,10 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
             alert.showErrorAlert("Error executing laporanPeriodeTS method!\nError code :\n" + ex.toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         return jp;
     }
@@ -135,7 +148,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         JasperPrint jp = null;
         BigDecimal bd = new BigDecimal(1);
         try (Connection conn = DB.getConn()){
-            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTR.jasper");
+            //InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTR.jasper");
+            InputStream fileName = new URL("http://apps.bcn.web.id/reports/LaporanHarianTR.jasper").openStream();
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -166,6 +180,10 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
             alert.showErrorAlert("Error executing laporanHarianTR method!\nError code :\n" + ex.toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         return jp;
     }
@@ -174,7 +192,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanPeriodeTr(Date tglAwal, Date tglAkhir) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTR.jasper");
+            //InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTR.jasper");
+            InputStream fileName = new URL("http://apps.bcn.web.id/reports/LaporanPeriodeTR.jasper").openStream();
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -207,6 +226,10 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
             alert.showErrorAlert("Error executing laporanPeriodeTR method!\nError code :\n" + ex.toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         return jp;
     }
@@ -215,7 +238,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanHarianTsi(Date tglAnalisa) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTSI.jasper");
+            //InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTSI.jasper");
+            InputStream fileName = new URL("http://apps.bcn.web.id/reports/LaporanHarianTSI.jasper").openStream();
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -246,6 +270,10 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
             alert.showErrorAlert("Error executing laporanHarianTSI method!\nError code :\n" + ex.toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         return jp;
     }
@@ -254,7 +282,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint laporanPeriodeTsi(Date tglAwal, Date tglAkhir) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTSI.jasper");
+            //InputStream fileName = getClass().getResourceAsStream("/reports/LaporanPeriodeTSI.jasper");
+            InputStream fileName = new URL("http://apps.bcn.web.id/reports/LaporanPeriodeTSI.jasper").openStream();
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -287,6 +316,10 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         } catch (SQLException|JRException ex){
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
             alert.showErrorAlert("Error executing laporanPeriodeTSI method!\nError code :\n" + ex.toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         return jp;
     }

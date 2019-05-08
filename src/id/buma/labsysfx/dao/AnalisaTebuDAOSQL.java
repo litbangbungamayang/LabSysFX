@@ -230,9 +230,13 @@ public class AnalisaTebuDAOSQL implements AnalisaTebuDAO {
                 jmlRend = jmlRend + rs.getDouble("rend_campur");
                 i++;
             }
-            DecimalFormat df = new DecimalFormat("#0.00");
-            Double hasil = Double.valueOf(df.format(jmlRend/i));
-            return hasil;
+            if (i == 0){
+                return 0.00;
+            } else {
+                DecimalFormat df = new DecimalFormat("#0.00");
+                Double hasil = Double.valueOf(df.format(jmlRend/i));
+                return hasil;
+            }
         } catch (SQLException ex) {
             errMsg.showErrorAlert("Error DAO getKp!" + "\n" +
                     "Error code : " + ex.getMessage());
@@ -255,8 +259,12 @@ public class AnalisaTebuDAOSQL implements AnalisaTebuDAO {
                 jmlHk = jmlHk + rs.getDouble("hk_bawah");
                 i++;
             }
-            DecimalFormat df = new DecimalFormat("#0.00");
-            return Double.valueOf(df.format(jmlHk/i));
+            if (i == 0){
+                return 0.00;
+            } else {
+                DecimalFormat df = new DecimalFormat("#0.00");
+                return Double.valueOf(df.format(jmlHk/i));
+            }
         } catch (SQLException ex) {
             errMsg.showErrorAlert("Error DAO getKdt!" + "\n" +
                         "Error code : " + ex.getMessage());

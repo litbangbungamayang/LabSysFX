@@ -6,9 +6,11 @@
 package id.buma.labsysfx.controller;
 
 import java.util.Optional;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
@@ -82,6 +84,22 @@ public class ErrorMessages {
         dialog.setHeaderText(message);
         dialog.setContentText(null);
         dialog.initModality(Modality.APPLICATION_MODAL);
+        return dialog;
+    }
+    
+    public Dialog showProgressDialog(String message, ReadOnlyDoubleProperty progressProp){
+        Dialog<Boolean> dialog = new Dialog<>();
+        dialog.initStyle(StageStyle.DECORATED);
+        dialog.setTitle("Update");
+        dialog.setHeaderText(message);
+        dialog.setContentText(null);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.getDialogPane().setMaxWidth(800);
+        ProgressBar progress = new ProgressBar();
+        progress.setMaxWidth(dialog.getWidth()*0.5);
+        progress.progressProperty().unbind();
+        progress.progressProperty().bind(progressProp);
+        dialog.getDialogPane().setContent(progress);
         return dialog;
     }
 

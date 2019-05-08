@@ -862,10 +862,11 @@ public class AnalisaKemasakanController implements Initializable {
             Double kp = 0.00;
             Double kdt = 0.00;
             if (Integer.valueOf(txtLabelRonde.getText()) > 2){
+                System.out.println(Integer.valueOf(txtLabelRonde.getText()));
                 Double rendLalu = analisaDao.getKp(petakKebun.getKodePetak(), Integer.valueOf(txtLabelRonde.getText()));
                 Double hkBawahLalu = analisaDao.getKdt(petakKebun.getKodePetak(), Integer.valueOf(txtLabelRonde.getText()));
-                kp = duaDesimalDouble((rendCampur/rendLalu))*100;
-                kdt = duaDesimalDouble((satuDesimalDouble((polBawah/brixBawah)*100)/
+                if (rendLalu > 0.00) kp = duaDesimalDouble((rendCampur/rendLalu))*100;
+                if (hkBawahLalu > 0.00) kdt = duaDesimalDouble((satuDesimalDouble((polBawah/brixBawah)*100)/
                         hkBawahLalu))*100;
             }
             Double kgPerMeter = duaDesimalDouble((beratTebuAtas + beratTebuTengah + beratTebuBawah)/rataFisik.getJmlPanjang());

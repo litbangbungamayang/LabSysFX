@@ -12,10 +12,20 @@ package id.buma.labsysfx;
 import id.buma.labsysfx.controller.MainScreenController;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -35,6 +45,7 @@ public class MainApp extends Application {
     
     private Stage primaryStage;
     private AnchorPane rootLayout;
+    public Boolean update = false;
     
     @Override
     public void start(Stage primaryStage) throws FontFormatException, IOException {
@@ -77,6 +88,61 @@ public class MainApp extends Application {
     public AnchorPane getRootLayout(){
         return rootLayout;
     }
+    
+    private void callJar(File updaterFile){
+        
+        try {
+            JarFile jarFile = null;
+            String mainClass = null;
+            try {
+                jarFile = new JarFile(updaterFile);
+                final Manifest manifest = jarFile.getManifest();
+                mainClass = manifest.getMainAttributes().getValue("Main-Class");
+            } catch (IOException ex) {
+                Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    jarFile.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            final URLClassLoader child = new URLClassLoader(new URL[]{updaterFile.toURI().toURL()},this.getClass().getClassLoader());
+            final Class classToLoad = Class.forName(mainClass, true, child);
+            final Method method = classToLoad.getDeclaredMethod("main", String[].class);
+            final Object[] arguments = {new String[0]};
+            method.invoke(null, arguments);
+        } catch (MalformedURLException | ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void launchUpdater(){
+        try {
+            CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+            File jarFile = new File(cs.getLocation().toURI().getPath());
+            String jarDir = jarFile.getParentFile().getPath();
+            File file = new File(jarDir + "/Updater.jar");
+            ProcessBuilder pb = new ProcessBuilder("java", "-jar", file.toString());
+            Process p = pb.start();
+        } catch (URISyntaxException | IOException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void stop() throws Exception {
+        if (update){
+            CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+            File jarFile = new File(cs.getLocation().toURI().getPath());
+            String jarDir = jarFile.getParentFile().getPath();
+            File updater = new File(jarDir + "/Updater.jar");
+            callJar(updater);
+        }
+        super.stop();
+    }
+    
+    
 
     /**
      * @param args the command line arguments
