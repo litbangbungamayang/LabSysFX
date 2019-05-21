@@ -106,7 +106,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
                         "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
-                        "petak.rayon, petak.varietas, varietas.nama_varietas, " +
+                        "petak.rayon, petak.varietas, varietas.nama_varietas, petak.ton_takmar, " +
                         "if(length(no_kontrak) = 15, substring(no_kontrak,9,1) * 1, " +
                             "substring(no_kontrak,9,2) * 1) as afdeling, " +
                         "hk_bawah-hk_atas as selisih_hk, " +
@@ -198,7 +198,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
                         "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
-                        "petak.rayon, petak.varietas, varietas.nama_varietas, " +
+                        "petak.rayon, petak.varietas, varietas.nama_varietas, petak.ton_takmar, " +
                         "substring(rayon,3,2) as afdeling, " +
                         "hk_bawah-hk_atas as selisih_hk, " +
                         "rend_bawah - rend_atas as selisih_rend, " +
@@ -288,7 +288,7 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
                         "petak.masa_tanam, petak.nama_kebun, petak.no_kontrak, petak.no_petak, " +
-                        "petak.rayon, petak.varietas, varietas.nama_varietas, " +
+                        "petak.rayon, petak.varietas, varietas.nama_varietas, petak.ton_takmar, " +
                         "if(length(no_kontrak) = 15, substring(no_kontrak,9,1) * 1, " +
                             "substring(no_kontrak,9,2) * 1) as afdeling, " +
                         "hk_bawah-hk_atas as selisih_hk, " +

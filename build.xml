@@ -62,7 +62,7 @@
             <zipgroupfileset dir="dist/lib" includes="*.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
-                <attribute name="Implementation-Version" value="1.0.0-alpha+201905081039"/>
+                <attribute name="Implementation-Version" value="1.0.0-alpha+201905210947"/>
             </manifest>
         </jar>
         <zip destfile="${store.jar}">
