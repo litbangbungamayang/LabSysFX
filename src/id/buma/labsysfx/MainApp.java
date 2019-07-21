@@ -58,6 +58,8 @@ public class MainApp extends Application {
         lsFonts.add(fontBold);
         InputStream fontItalic = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/OpenSans-Italic.ttf");
         lsFonts.add(fontItalic);
+        fontReg = getClass().getResourceAsStream("/id/buma/labsysfx/assets/fonts/segoeui.ttf");
+        lsFonts.add(fontReg);
         for (InputStream is : lsFonts){
             java.awt.Font font = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is);
             if (ge.registerFont(font)) {System.out.println(font.getName() + " OK");} else {System.out.println(font.getName() + " Failed");}

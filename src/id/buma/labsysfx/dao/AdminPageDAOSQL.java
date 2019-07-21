@@ -5,7 +5,6 @@
  */
 package id.buma.labsysfx.dao;
 
-import com.sun.deploy.util.StringUtils;
 import id.buma.labsysfx.controller.ErrorMessages;
 import id.buma.labsysfx.database.DB;
 import id.buma.labsysfx.model.UpdateFile;
@@ -14,9 +13,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.format.DateTimeFormatter;
-import net.sf.jasperreports.functions.standard.TextFunctions;
-import org.apache.poi.util.StringUtil;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -70,7 +66,7 @@ public class AdminPageDAOSQL implements AdminPageDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
                 String version = rs.getString("version");
-                String dateVersion = version.substring(version.length()-12);
+                String dateVersion = "201901010101";
                 DateTime dt = daf.parseDateTime(dateVersion);
                 update = new UpdateFile(
                         rs.getString("fileName"), 

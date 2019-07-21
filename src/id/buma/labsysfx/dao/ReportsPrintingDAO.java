@@ -29,4 +29,6 @@ public interface ReportsPrintingDAO {
     
     public JasperPrint laporanPeriodeTsi(java.sql.Date tglAwal, java.sql.Date tglAkhir);
     
+    public JasperPrint viewDataPetak(String kodePetak);
+    
 }

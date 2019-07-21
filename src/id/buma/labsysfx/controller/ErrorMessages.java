@@ -87,6 +87,16 @@ public class ErrorMessages {
         return dialog;
     }
     
+    public Dialog showNotificationDialog(String message){
+        Dialog<Boolean> dialog = new Dialog<>();
+        dialog.initStyle(StageStyle.DECORATED);
+        dialog.setTitle("Update Check");
+        dialog.setHeaderText(message);
+        dialog.setContentText(null);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        return dialog;
+    }
+    
     public Dialog showProgressDialog(String message, ReadOnlyDoubleProperty progressProp){
         Dialog<Boolean> dialog = new Dialog<>();
         dialog.initStyle(StageStyle.DECORATED);

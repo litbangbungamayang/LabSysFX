@@ -175,9 +175,9 @@
                                  <children>
                                     <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <JFXButton contentDisplay="TOP" focusTraversable="false" layoutX="837.0" layoutY="10.0" prefHeight="440.0" prefWidth="250.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Overview Petak Kebun" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <JFXButton contentDisplay="TOP" focusTraversable="false" layoutX="837.0" layoutY="10.0" prefHeight="440.0" prefWidth="150.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Overview Kebun" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <graphic>
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../assets/location_putih.png" />
                                                    </image>
@@ -190,9 +190,9 @@
                                                 <Insets left="10.0" right="10.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton fx:id="menuLaboratPabrik" contentDisplay="TOP" focusTraversable="false" prefHeight="440.0" prefWidth="250.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Laboratorium Pabrik" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <JFXButton fx:id="menuLaboratPabrik" contentDisplay="TOP" focusTraversable="false" prefHeight="440.0" prefWidth="150.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Lab. Pabrik" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <graphic>
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../assets/labu_reaksi_putih.png" />
                                                    </image>
@@ -205,9 +205,9 @@
                                                 <Insets left="10.0" right="10.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton fx:id="menuAnkem" contentDisplay="TOP" focusTraversable="false" prefHeight="440.0" prefWidth="250.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Analisa Kemasakan" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <JFXButton fx:id="menuAnkem" contentDisplay="TOP" focusTraversable="false" prefHeight="440.0" prefWidth="150.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Analisa Kemasakan" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <graphic>
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../assets/daun_putih.png" />
                                                    </image>
@@ -220,9 +220,9 @@
                                                 <Insets left="10.0" right="10.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton contentDisplay="TOP" focusTraversable="false" prefHeight="440.0" prefWidth="250.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Proteksi Tanaman" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <JFXButton contentDisplay="TOP" focusTraversable="false" prefHeight="440.0" prefWidth="150.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Proteksi Tanaman" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <graphic>
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../assets/emperor-butterfly_putih.png" />
                                                    </image>
@@ -235,9 +235,9 @@
                                                 <Insets left="10.0" right="10.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton contentDisplay="TOP" focusTraversable="false" prefHeight="440.0" prefWidth="250.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Analisa Tanah" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <JFXButton contentDisplay="TOP" focusTraversable="false" prefHeight="440.0" prefWidth="150.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Analisa Tanah" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <graphic>
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../assets/shovel_putih.png" />
                                                    </image>
@@ -245,6 +245,21 @@
                                              </graphic>
                                              <font>
                                                 <Font name="Open Sans" size="22.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </HBox.margin>
+                                          </JFXButton>
+                                          <JFXButton contentDisplay="TOP" focusTraversable="false" layoutX="880.0" layoutY="10.0" prefHeight="440.0" prefWidth="150.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Analisa Rendemen Individu" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <graphic>
+                                                <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../assets/line-graph.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <font>
+                                                <Font name="Open Sans" size="15.0" />
                                              </font>
                                              <HBox.margin>
                                                 <Insets left="10.0" right="10.0" />

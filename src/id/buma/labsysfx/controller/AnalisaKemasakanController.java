@@ -42,6 +42,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
@@ -82,6 +83,10 @@ public class AnalisaKemasakanController implements Initializable {
     private JFXTextField txtJenisAnalisa;
     @FXML
     private JFXButton btnNextAnalisa;
+    @FXML
+    private JFXButton btnViewData;
+    @FXML
+    private JFXButton btnPreviewPetak;
     @FXML
     private JFXTextField txtBobotTebuAtas;
     @FXML
@@ -210,6 +215,8 @@ public class AnalisaKemasakanController implements Initializable {
     private JFXButton btnPreview;
     @FXML
     private CheckBox chkLaporanSd;
+    @FXML
+    private AnchorPane anchorPRonde;
     
 //</editor-fold>
     
@@ -245,6 +252,8 @@ public class AnalisaKemasakanController implements Initializable {
     private final ReportsPrintingDAOSQL reportsDao = new ReportsPrintingDAOSQL();
     
     private final ErrorMessages alert = new ErrorMessages();
+    
+    public String inputStatus;
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="Methods Library">   
@@ -1074,6 +1083,14 @@ public class AnalisaKemasakanController implements Initializable {
         }
     }
     
+    public void previewDataKebun(){
+        if (petakKebun != null){
+            JasperPrint jp =  reportsDao.viewDataPetak(petakKebun.getKodePetak());
+            JasperViewer.viewReport(jp, false);
+            //alert.showInfoAlert(petakKebun.getKodePetak());
+        }
+    }
+    
 //</editor-fold>
     
     @Override
@@ -1088,6 +1105,10 @@ public class AnalisaKemasakanController implements Initializable {
             resetField();
             validatorField();
             titPaneInputData.setExpanded(true);
+            btnNextAnalisa.setVisible(true);
+            btnViewData.setVisible(false);
+            anchorPRonde.setVisible(true);
+            inputStatus = "input";
         });
         btnSubMenuLaporanAnalisa.setOnAction((event) -> {
             containerAnkem.getSelectionModel().select(pageLaporan);
@@ -1158,7 +1179,20 @@ public class AnalisaKemasakanController implements Initializable {
         btnPreview.setOnAction((event) -> {
             previewLaporan();
         });
-        
+        btnPreviewPetak.setOnAction((event) -> {
+            containerAnkem.getSelectionModel().select(pageInputDataAnalisa);
+            resetDataAwal();
+            resetField();
+            validatorField();
+            titPaneInputData.setExpanded(true);
+            btnViewData.setVisible(true);
+            btnNextAnalisa.setVisible(false);
+            anchorPRonde.setVisible(false);
+            inputStatus = "view";
+        });
+        btnViewData.setOnAction((event) -> {
+            previewDataKebun();
+        });
         
         /****************** DAFTAR BINDINGS **********************/
         btnSimpan.disableProperty().bind(Bindings.size(dataAnalisa).lessThan(1));

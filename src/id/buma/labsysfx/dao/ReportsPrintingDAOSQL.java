@@ -323,5 +323,21 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         }
         return jp;
     }
+
+    @Override
+    public JasperPrint viewDataPetak(String kodePetak) {
+        JasperPrint jp = null;
+        try (Connection conn = DB.getConn()){
+            InputStream fileName = new URL("http://apps.bcn.web.id/reports/ViewPetakKebun.jasper").openStream();
+            Map map = new HashMap();
+            map.put("kode_petak", kodePetak);
+            jp = JasperFillManager.fillReport(fileName, map, conn);
+        } catch (SQLException | MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | JRException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return jp;
+    }
     
 }

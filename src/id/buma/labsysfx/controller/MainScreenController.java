@@ -108,6 +108,11 @@ public class MainScreenController implements Initializable {
     
     public MainScreenController(){
     }
+    
+    private final Dialog<Boolean> popUp = alert.showWaitDialog("Mengecek pembaruan aplikasi.");
+    
+    private final Dialog<Boolean> popUpNotif = alert.showNotificationDialog("Aplikasi akan menutup untuk mengunduh pembaruan.");
+    
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Methods Library">
@@ -189,11 +194,16 @@ public class MainScreenController implements Initializable {
     }
     
     private Task downloadWorker(URL alamat, File updateFile, long fileSize, File downloadedFile, Boolean isCritical){
-        return new Task() {
-            
+        
+        return new Task() {    
             @Override
-            protected Object call() throws Exception {
-                FileUtils.copyURLToFile(alamat, updateFile, 10000, 10000);
+            protected Object call(){
+                try {
+                    FileUtils.copyURLToFile(alamat, updateFile, 10000, 10000);
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println(ex.toString());
+                }
                 return true;
             }
 
@@ -205,7 +215,6 @@ public class MainScreenController implements Initializable {
                     new Thread(progress).start();
                 }
             }
-
         };
     }
     
@@ -213,6 +222,9 @@ public class MainScreenController implements Initializable {
         return new Task() {
             @Override
             protected Object call() {
+                Platform.runLater(() -> {
+                    popUp.show();
+                });
                 Boolean isNeedUpdate;
                 Boolean isInconsistence;
                 Boolean isCritical;
@@ -226,48 +238,67 @@ public class MainScreenController implements Initializable {
                 isInconsistence = thisDateTime.isAfter(update.getDateVersion());
                 isCritical = update.getUrgency().equals("critical");
                 // FOR TESTING
-                //isNeedUpdate = true;
+                isNeedUpdate = true;
+                
                 //============
                 if (isNeedUpdate){
                     try {
-                        String updateUrl = "http://apps.bcn.web.id/LabSysFX.jar";
-                        URL alamat = new URL(updateUrl);
-                        URLConnection conn = alamat.openConnection();
-                        ((HttpURLConnection) conn).setRequestMethod("HEAD");
-                        conn.getInputStream();
-                        int fileSize = conn.getContentLength();
+                        Platform.runLater(() -> {                           
+                            popUp.setResult(true);
+                            popUp.close();
+                        });
                         CodeSource cs = getClass().getProtectionDomain().getCodeSource();
                         File jarFile = new File(cs.getLocation().toURI().getPath());
                         String jarDir = jarFile.getParentFile().getPath();
-                        File toDownload = new File(jarDir + "/apps_update.jar");
-                        Task downloadWorker = downloadWorker(alamat, toDownload, 
-                                fileSize, toDownload, isCritical);
-                        downloadWorker.setOnSucceeded((event) -> {
-                            // TODO Cek MD5 hash
-                            if (update.getChecksum().equals(getMD5(toDownload))){
-                                if (isCritical){
-                                    File updaterFile = new File(jarDir + "/Updater.jar");
-                                    alert.showInfoAlert("Aplikasi akan menutup untuk memasang pembaruan!");
-                                    Platform.exit();
-                                    callJar(updaterFile);
-                                } else {
-                                    mainApp.update = true;
-                                }
-                            }
-                        });
-                        downloadWorker.setOnFailed((event) -> {
-                            alert.showErrorAlert("Pembaruan aplikasi gagal!");
-                        });
-                        new Thread(downloadWorker).start();
-                    } catch (MalformedURLException ex) {
-                        Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException | URISyntaxException ex) {
+                        File file = new File(jarDir + "/Installer.jar");
+                        ProcessBuilder pb = new ProcessBuilder("java","-jar",file.getAbsolutePath());
+                        Platform.exit();
+                        Process p = pb.start();
+                    } catch (URISyntaxException | IOException ex) {
                         Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
                 return true;
             }
         };
+    }
+    
+    private void cekUpdate(){
+        popUp.show();
+        Boolean isNeedUpdate;
+        Boolean isInconsistence;
+        Boolean isCritical;
+        UpdateFile update = adminPageDao.getUpdatePath();
+        String thisVersion = getClass().getPackage().getImplementationVersion();
+        String pattern = "yyyyMMddHHmm";
+        DateTimeFormatter daf = DateTimeFormat.forPattern(pattern);
+        String thisDateVersion = thisVersion.substring(thisVersion.length()-12);
+        DateTime thisDateTime = daf.parseDateTime(thisDateVersion);
+        isNeedUpdate = thisDateTime.isBefore(update.getDateVersion());
+        isInconsistence = thisDateTime.isAfter(update.getDateVersion());
+        isCritical = update.getUrgency().equals("critical");
+        // FOR TESTING
+        //isNeedUpdate = true;
+
+        //============
+        if (isNeedUpdate){
+            try {
+                popUp.setResult(true);
+                popUp.close();
+                alert.showWarningAlert("Pembaruan aplikasi tersedia. Aplikasi akan menutup dan mengunduh pembaruan.");
+                CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+                File jarFile = new File(cs.getLocation().toURI().getPath());
+                String jarDir = jarFile.getParentFile().getPath();
+                File file = new File(jarDir + "/Installer.jar");
+                ProcessBuilder pb = new ProcessBuilder("java","-jar",file.getAbsolutePath());
+                Platform.exit();
+                Process p = pb.start();
+            } catch (URISyntaxException | IOException ex) {
+                Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        popUp.setResult(true);
+        popUp.close();
     }
     
     private Boolean cekFileUpdater(){
@@ -282,48 +313,9 @@ public class MainScreenController implements Initializable {
         } catch (URISyntaxException ex) {
             Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return true;
     }
     
-    private void runningUpdater(){
-        try {
-            CodeSource cs = getClass().getProtectionDomain().getCodeSource();
-            File jarFile = new File(cs.getLocation().toURI().getPath());
-            String jarDir = jarFile.getParentFile().getPath();
-            File file = new File(jarDir + "/Updater.jar");
-            ProcessBuilder pb = new ProcessBuilder("java", "-jar", file.toString());
-            Process p = pb.start();
-        } catch (URISyntaxException | IOException ex) {
-            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private void callJar(File updaterFile){
-        try {
-            JarFile jarFile = null;
-            String mainClass = null;
-            try {
-                jarFile = new JarFile(updaterFile);
-                final Manifest manifest = jarFile.getManifest();
-                mainClass = manifest.getMainAttributes().getValue("Main-Class");
-            } catch (IOException ex) {
-                Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    jarFile.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            final URLClassLoader child = new URLClassLoader(new URL[]{updaterFile.toURI().toURL()},this.getClass().getClassLoader());
-            final Class classToLoad = Class.forName(mainClass, true, child);
-            final Method method = classToLoad.getDeclaredMethod("main", String[].class);
-            final Object[] arguments = {new String[0]};
-            method.invoke(null, arguments);
-        } catch (MalformedURLException | ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -338,14 +330,13 @@ public class MainScreenController implements Initializable {
                 if (userLab != null && cekFileUpdater()){
                     lblUsername.setText(userLab.getNamaUser());
                     hboxUsername.setVisible(true);
+                    cekUpdate();
                     tabPane.getSelectionModel().select(tabMainMenu);
                     if (!userLab.getRole().equals("ADM")){
                         vboxAdmin.setVisible(false);
                     } else {
                         vboxAdmin.setVisible(true);
                     }
-                    Thread tUpdateCheck = new Thread(updateCheck());
-                    tUpdateCheck.start();
                 } else {
                     if(userLab == null) alert.showErrorAlert("Username atau password tidak cocok!");
                     if(!cekFileUpdater()) alert.showErrorAlert("File Updater.jar tidak ada!");
