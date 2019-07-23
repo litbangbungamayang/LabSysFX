@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -1065,17 +1066,6 @@ public class AnalisaKemasakanController implements Initializable {
                         JasperViewer.viewReport(jp,false);
                         break;
                 }
-                /*
-                if (txtLaporanTstr.getText().equals("TS")){
-                    JasperPrint jp = reportsDao.laporanHarianTs(java.sql.Date.valueOf(dtpTglLaporanAwal.getValue()));
-                    JasperViewer.viewReport(jp, false);
-                } else {
-                    if (txtLaporanTstr.getText().equals("TR")){
-                        JasperPrint jp = reportsDao.laporanHarianTr(java.sql.Date.valueOf(dtpTglLaporanAwal.getValue()));
-                        JasperViewer.viewReport(jp, false);
-                    }
-                }
-                */
             }
         } else {
             if (dtpTglLaporanAwal.getValue() == null) alert.showErrorAlert("Tanggal laporan belum dipilih!");
@@ -1086,8 +1076,9 @@ public class AnalisaKemasakanController implements Initializable {
     public void previewDataKebun(){
         if (petakKebun != null){
             JasperPrint jp =  reportsDao.viewDataPetak(petakKebun.getKodePetak());
-            JasperViewer.viewReport(jp, false);
-            //alert.showInfoAlert(petakKebun.getKodePetak());
+            Platform.runLater(() -> {
+                JasperViewer.viewReport(jp, false);
+            });
         }
     }
     

@@ -334,8 +334,10 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
             jp = JasperFillManager.fillReport(fileName, map, conn);
         } catch (SQLException | MalformedURLException ex) {
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing viewDataPetak method!\nError code :\n" + ex.toString());
         } catch (IOException | JRException ex) {
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing viewDataPetak method!\nError code :\n" + ex.toString());
         }
         return jp;
     }
