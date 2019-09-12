@@ -250,7 +250,7 @@
                                                 <Insets left="10.0" right="10.0" />
                                              </HBox.margin>
                                           </JFXButton>
-                                          <JFXButton contentDisplay="TOP" focusTraversable="false" layoutX="880.0" layoutY="10.0" prefHeight="440.0" prefWidth="150.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Analisa Rendemen Individu" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <JFXButton fx:id="menuCS" contentDisplay="TOP" focusTraversable="false" layoutX="880.0" layoutY="10.0" prefHeight="440.0" prefWidth="150.0" styleClass="main-menu-button" stylesheets="@../assets/main_interface.css" text="Analisa Rendemen Individu" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <graphic>
                                                 <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>

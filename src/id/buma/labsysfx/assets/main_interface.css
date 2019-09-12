@@ -48,6 +48,11 @@
     -fx-background-color: rgb(44,62,80);
 }
 
+.sub-panel-sub-tabs {
+    -fx-background-color: rgb(44,62,80);
+    -fx-border-color: grey;
+}
+
 .main-menu-strip {
     -fx-background-color: rgb(44,62,80);
 }
@@ -181,7 +186,7 @@
     -fx-prompt-text-fill: transparent;
 }
 .txtFieldUmum .error-label {
-    -fx-font-size: 12;
+    -fx-font-size: 10;
     -fx-font-weight: bold;
 }
 .txtFieldUmum .text-field {

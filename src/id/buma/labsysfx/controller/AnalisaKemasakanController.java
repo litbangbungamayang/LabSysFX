@@ -5,6 +5,10 @@
  */
 package id.buma.labsysfx.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.jfoenix.controls.JFXAutoCompletePopup;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
@@ -20,14 +24,22 @@ import id.buma.labsysfx.dao.ReportsPrintingDAOSQL;
 import id.buma.labsysfx.dao.VarietasDAOSQL;
 import id.buma.labsysfx.model.AnalisaTebu;
 import id.buma.labsysfx.model.FisikTebu;
+import id.buma.labsysfx.model.HasilAnalisaHarianCS;
 import id.buma.labsysfx.model.PetakKebun;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -66,6 +78,8 @@ public class AnalisaKemasakanController implements Initializable {
     private JFXButton btnSubMenuLaporanAnalisa;
     @FXML
     private JFXButton btnBackMainMenu;
+    @FXML
+    private Button btnTesJson;
     @FXML
     private TabPane containerAnkem;
     @FXML
@@ -1183,6 +1197,22 @@ public class AnalisaKemasakanController implements Initializable {
         });
         btnViewData.setOnAction((event) -> {
             previewDataKebun();
+        });
+        btnTesJson.setOnAction((event) -> {
+            try {
+                Gson gson = new GsonBuilder().create();
+                URL url = new URL("http://optanaman:optanaman@simpgbuma.ptpn7.com/index.php/apibuma/get_rend_cs/?tgl=2019-08-22");
+                URLConnection request = url.openConnection();
+                request.connect();
+                JsonParser jp = new JsonParser();
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+                HasilAnalisaHarianCS hasil = gson.fromJson(root, HasilAnalisaHarianCS.class);
+                alert.showInfoAlert(hasil.toString());
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(AnalisaKemasakanController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(AnalisaKemasakanController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         
         /****************** DAFTAR BINDINGS **********************/

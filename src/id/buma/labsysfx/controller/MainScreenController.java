@@ -6,6 +6,7 @@
 package id.buma.labsysfx.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDatePicker;
 import id.buma.labsysfx.MainApp;
 import id.buma.labsysfx.dao.AdminPageDAOSQL;
 import id.buma.labsysfx.model.UpdateFile;
@@ -14,22 +15,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.URLConnection;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -40,7 +33,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -48,6 +40,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -86,6 +79,8 @@ public class MainScreenController implements Initializable {
     @FXML
     private JFXButton menuAnkem;
     @FXML
+    private JFXButton menuCS;
+    @FXML
     private JFXButton btnAdmin;
     @FXML
     private JFXButton btnLogout;
@@ -107,6 +102,7 @@ public class MainScreenController implements Initializable {
     private MainApp mainApp;
     
     public MainScreenController(){
+        
     }
     
     private final Dialog<Boolean> popUp = alert.showWaitDialog("Mengecek pembaruan aplikasi.");
@@ -316,6 +312,33 @@ public class MainScreenController implements Initializable {
         return true;
     }
     
+    public void setDatePickerFormatting(JFXDatePicker dtp){
+        dtp.setConverter(new StringConverter<LocalDate>() {
+            String pattern = "yyyy-MM-dd";
+            java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern(pattern);
+                {
+                    dtp.setPromptText(pattern.toLowerCase());
+                }
+            @Override
+            public String toString(LocalDate object) {
+                if (object != null){
+                    return dtf.format(object);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()){
+                    return LocalDate.parse(string, dtf);
+                } else {
+                    return null;
+                }
+            }
+        });
+    }
+    
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -398,6 +421,21 @@ public class MainScreenController implements Initializable {
                 Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }));
+        menuCS.setOnAction((event) -> {
+            try {
+                tabPane.getSelectionModel().select(tabContent);
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(MainApp.class.getResource("view/LabCS.fxml"));
+                BorderPane CSContent = (BorderPane) loader.load();
+                tabContent.setContent(CSContent);
+                CSController csc = loader.getController();
+                csc.setMainApp(mainApp);
+                csc.setMainScreenController(this);
+                csc.showDashboard();
+            } catch (IOException ex) {
+                Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         
         
         /******* DAFTAR BINDINGS **************/

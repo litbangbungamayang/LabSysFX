@@ -51,6 +51,7 @@ public class ErrorMessages {
         alert.setTitle("Konfirmasi");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> pilihan = alert.showAndWait();
         return pilihan.get() == ButtonType.OK;
     }
