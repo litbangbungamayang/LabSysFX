@@ -31,4 +31,10 @@ public interface ReportsPrintingDAO {
     
     public JasperPrint viewDataPetak(String kodePetak);
     
+    public JasperPrint viewDailyCS(java.sql.Date tglTimbang);
+    
+    public JasperPrint viewCSToDate(java.sql.Date tgl_1, java.sql.Date tgl_2);
+    
+    public String getReportsUrl(String fileName);
+    
 }

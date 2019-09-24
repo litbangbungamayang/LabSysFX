@@ -5,10 +5,6 @@
  */
 package id.buma.labsysfx.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
@@ -17,24 +13,23 @@ import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import id.buma.labsysfx.MainApp;
 import id.buma.labsysfx.dao.LabCSDAOSQL;
+import id.buma.labsysfx.dao.ReportsPrintingDAO;
+import id.buma.labsysfx.dao.ReportsPrintingDAOSQL;
 import id.buma.labsysfx.model.HasilAnalisaHarianCS;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.text.Text;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -50,11 +45,15 @@ public class CSController implements Initializable {
     @FXML
     private Tab pageDashboard;
     @FXML
-    private Tab pageLaporan1;
+    private Tab pageFaktor1;
     @FXML
-    private Tab pageLaporan2;
+    private Tab pageFaktor2;
+    @FXML
+    private Tab pageLaporan;
     @FXML
     private JFXButton btnBackMainMenu;
+    @FXML
+    private JFXButton btnSubMenuFaktor;
     @FXML
     private JFXButton btnSubMenuLaporan;
     @FXML
@@ -66,7 +65,13 @@ public class CSController implements Initializable {
     @FXML
     private JFXButton btnTerapkanFaktor;
     @FXML
+    private JFXButton btnPreview;
+    @FXML
     private JFXDatePicker dtpTglTimbang;
+    @FXML
+    private JFXDatePicker dtpTglLaporan1;
+    @FXML
+    private JFXDatePicker dtpTglLaporan2;
     @FXML
     private Text txtTglTimbang;
     @FXML
@@ -81,6 +86,8 @@ public class CSController implements Initializable {
     private Text txtHablurEfektif;
     @FXML
     private JFXTextField txtRendPabrik;
+    @FXML
+    private CheckBox chkLaporanSd;
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="Object Declarations">
@@ -88,6 +95,7 @@ public class CSController implements Initializable {
     private MainScreenController msc;
     private final ErrorMessages alert = new ErrorMessages();
     private final LabCSDAOSQL labCsDao = new LabCSDAOSQL();
+    private final ReportsPrintingDAO reportsDao = new ReportsPrintingDAOSQL();
     private final NumberValidator validatorAngka = new NumberValidator("Input tidak valid! Harus berupa angka.");
     private final DoubleValidator validatorDesimal = new DoubleValidator();
     private final RequiredFieldValidator validatorWajib = new RequiredFieldValidator();
@@ -112,16 +120,21 @@ public class CSController implements Initializable {
     
     public void getDataCS(){
         if (dtpTglTimbang.getValue() != null){
-            HasilAnalisaHarianCS hasil = labCsDao.getDataCS(dtpTglTimbang.getValue().toString());
-            if (hasil != null){
-                DecimalFormat df = new DecimalFormat("#,##0.00");
-                containerCS.getSelectionModel().select(pageLaporan2);
-                txtTglTimbang.setText(dtpTglTimbang.getValue().toString());
-                txtTonTebu.setText(df.format(hasil.ton_tebu) + " ton");
-                txtTonHablur.setText(df.format(hasil.hablur_analisa) + " ton");
-                txtRend.setText(df.format(hasil.rend));
+            boolean isNotExist = labCsDao.cekFaktorEfektif(dtpTglTimbang.getValue().toString());
+            if (isNotExist){
+                HasilAnalisaHarianCS hasil = labCsDao.getDataCS(dtpTglTimbang.getValue().toString());
+                if (hasil != null){
+                    DecimalFormat df = new DecimalFormat("#,##0.00");
+                    containerCS.getSelectionModel().select(pageFaktor2);
+                    txtTglTimbang.setText(dtpTglTimbang.getValue().toString());
+                    txtTonTebu.setText(df.format(hasil.ton_tebu) + " ton");
+                    txtTonHablur.setText(df.format(hasil.hablur_analisa) + " ton");
+                    txtRend.setText(df.format(hasil.rend));
+                } else {
+                    alert.showWarningAlert("Data tidak ditemukan!");
+                }
             } else {
-                alert.showWarningAlert("Data tidak ditemukan!");
+                alert.showErrorAlert("Faktor untuk tanggal ini sudah diterapkan!");
             }
         } else {
             alert.showErrorAlert("Pilih tanggal timbang!");
@@ -136,7 +149,17 @@ public class CSController implements Initializable {
         txtRendPabrik.getValidators().add(validatorWajib);
         txtRendPabrik.getValidators().add(validatorDesimal);
         txtRendPabrik.focusedProperty().addListener((observable) -> {
-            txtRendPabrik.validate();
+            txtRendPabrik.validate();   
+        });
+        
+        dtpTglLaporan1.getValidators().add(validatorWajib);
+        dtpTglLaporan1.focusedProperty().addListener((observable) -> {
+            dtpTglLaporan1.validate();
+        });
+        
+        dtpTglLaporan2.getValidators().add(validatorWajib);
+        dtpTglLaporan2.focusedProperty().addListener((observable) -> {
+            dtpTglLaporan2.validate();
         });
     }
     
@@ -167,9 +190,34 @@ public class CSController implements Initializable {
     public void resetFields(){
         txtRendPabrik.clear();
         btnHitungEst.setText("Hitung Estimasi");
+        btnTerapkanFaktor.setText("Terapkan Faktor");
         txtRendPabrik.setEditable(true);
         txtFaktor.setText(null);
         txtHablurEfektif.setText(null);
+    }
+    
+    public void terapkanFaktor(){
+        if (alert.showConfirmation("Anda akan menerapkan faktor " + txtFaktor.getText() + " untuk tanggal timbang " + txtTglTimbang.getText() +
+                " dan hablur efektif (TR) menjadi " + txtHablurEfektif.getText() + " ton. Terapkan faktor ini?")){
+            if (labCsDao.setFaktorEfektif(Double.parseDouble(txtFaktor.getText()), dtpTglTimbang.getValue().toString())){
+                alert.showInfoAlert("Data tersimpan");
+                btnTerapkanFaktor.setText("Lihat Laporan Harian");
+            } else {
+                alert.showErrorAlert("Server tidak merespon atau data tidak valid. Data tidak tersimpan.");
+            }
+        }
+    }
+    
+    public void previewLaporan(){
+        if (!chkLaporanSd.isSelected() && dtpTglLaporan1.validate()){
+            JasperPrint jp = reportsDao.viewDailyCS(java.sql.Date.valueOf(dtpTglLaporan1.getValue()));
+            JasperViewer.viewReport(jp, false);
+        } else {
+            if (chkLaporanSd.isSelected() && dtpTglLaporan1.validate() && dtpTglLaporan2.validate()){
+                JasperPrint jp = reportsDao.viewCSToDate(java.sql.Date.valueOf(dtpTglLaporan1.getValue()), java.sql.Date.valueOf(dtpTglLaporan2.getValue()));
+                JasperViewer.viewReport(jp, false);
+            }
+        }
     }
 //</editor-fold>
     
@@ -178,12 +226,19 @@ public class CSController implements Initializable {
         btnBackMainMenu.setOnAction((event) -> {
             msc.getTabPane().getSelectionModel().select(msc.getTabMainMenu());
         });
-        btnSubMenuLaporan.setOnAction((event) -> {
-            containerCS.getSelectionModel().select(pageLaporan1);
+        btnSubMenuFaktor.setOnAction((event) -> {
+            containerCS.getSelectionModel().select(pageFaktor1);
             msc.setDatePickerFormatting(dtpTglTimbang);
             dtpTglTimbang.setValue(null);
             validatorField();
             resetFields();
+        });
+        btnSubMenuLaporan.setOnAction((event) -> {
+            containerCS.getSelectionModel().select(pageLaporan);
+            msc.setDatePickerFormatting(dtpTglLaporan1);
+            msc.setDatePickerFormatting(dtpTglLaporan2);
+            dtpTglLaporan1.setValue(null);
+            dtpTglLaporan2.setValue(null);
         });
         btnSubMenuDashboard.setOnAction((event) -> {
             showDashboard();
@@ -195,15 +250,15 @@ public class CSController implements Initializable {
             hitungEstimasi();
         });
         btnTerapkanFaktor.setOnAction((event) -> {
-            if (alert.showConfirmation("Anda akan menerapkan faktor " + txtFaktor.getText() + " untuk tanggal timbang " + txtTglTimbang.getText() +
-                    " dan hablur efektif (TR) menjadi " + txtHablurEfektif.getText() + " ton. Terapkan faktor ini?")){
-                if (labCsDao.setFaktorEfektif(Double.parseDouble(txtFaktor.getText()), dtpTglTimbang.getValue().toString())){
-                    alert.showInfoAlert("Data tersimpan");
-                } else {
-                    alert.showErrorAlert("Server tidak merespon atau data tidak valid. Data tidak tersimpan.");
-                }
+            if (btnTerapkanFaktor.getText().equals("Terapkan Faktor")){
+                terapkanFaktor();
             }
         });
+        btnPreview.setOnAction((event) -> {
+            previewLaporan();
+        });
+        
+        dtpTglLaporan2.disableProperty().bind(Bindings.not(chkLaporanSd.selectedProperty()));
     }
     
 }

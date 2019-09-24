@@ -16,8 +16,10 @@ public interface LabCSDAO {
     
     public HasilAnalisaHarianCS getDataCS(String tglAnalisa);
     
-    public Double getHablurEfektif(Double faktor, String tglAnalisa);
+    public Double getHablurEfektif(Double faktor, String tglTimbang);
     
-    public boolean setFaktorEfektif(Double faktor, String tglAnalisa);
+    public boolean setFaktorEfektif(Double faktor, String tglTimbang);
+    
+    public boolean cekFaktorEfektif(String tglTimbang);
     
 }

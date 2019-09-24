@@ -50,11 +50,11 @@ public class LabCSDAOSQL implements LabCSDAO{
     }
 
     @Override
-    public Double getHablurEfektif(Double faktor, String tglAnalisa) {
+    public Double getHablurEfektif(Double faktor, String tglTimbang) {
         Double hasil = 0.0;
         try {
                 Gson gson = new GsonBuilder().create();
-                URL url = new URL("http://optanaman:optanaman@simpgbuma.ptpn7.com/index.php/apibuma/get_hablur_koreksi/?tgl=" + tglAnalisa + 
+                URL url = new URL("http://optanaman:optanaman@simpgbuma.ptpn7.com/index.php/apibuma/get_hablur_koreksi/?tgl=" + tglTimbang + 
                         "&faktor=" + String.valueOf(faktor));
                 URLConnection request = url.openConnection();
                 request.connect();
@@ -73,10 +73,10 @@ public class LabCSDAOSQL implements LabCSDAO{
     }
 
     @Override
-    public boolean setFaktorEfektif(Double faktor, String tglAnalisa) {
+    public boolean setFaktorEfektif(Double faktor, String tglTimbang) {
         try {
                 Gson gson = new GsonBuilder().create();
-                URL url = new URL("http://optanaman:optanaman@simpgbuma.ptpn7.com/index.php/apibuma/insert_faktor/?tglTimbang=" + tglAnalisa + 
+                URL url = new URL("http://optanaman:optanaman@simpgbuma.ptpn7.com/index.php/apibuma/insert_faktor/?tglTimbang=" + tglTimbang + 
                         "&faktor=" + String.valueOf(faktor));
                 URLConnection request = url.openConnection();
                 request.connect();
@@ -84,6 +84,25 @@ public class LabCSDAOSQL implements LabCSDAO{
                 JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
                 System.out.println(gson.fromJson(root, String.class));
                 if (gson.fromJson(root, String.class).equals("true")) return true;
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(AnalisaKemasakanController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AnalisaKemasakanController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean cekFaktorEfektif(String tglTimbang) {
+        try {
+                Gson gson = new GsonBuilder().create();
+                URL url = new URL("http://optanaman:optanaman@simpgbuma.ptpn7.com/index.php/apibuma/cek_faktor/?tglTimbang=" + tglTimbang );
+                URLConnection request = url.openConnection();
+                request.connect();
+                JsonParser jp = new JsonParser();
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+                System.out.println(gson.fromJson(root, String.class));
+                if (gson.fromJson(root, Integer.class) == 0) return true;
         } catch (MalformedURLException ex) {
             Logger.getLogger(AnalisaKemasakanController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

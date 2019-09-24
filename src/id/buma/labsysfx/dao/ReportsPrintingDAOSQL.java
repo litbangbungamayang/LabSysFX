@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -26,6 +27,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.query.JsonQLQueryExecuterFactory;
+import net.sf.jasperreports.engine.query.JsonQueryExecuter;
 
 /**
  *
@@ -56,7 +59,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
             //InputStream fileName = getClass().getResourceAsStream("/reports/LaporanHarianTS.jasper");
-            InputStream fileName = new URL("http://apps.bcn.web.id/reports/LaporanHarianTS.jasper").openStream();
+            //InputStream fileName = new URL("http://apps.bcn.web.id/reports/LaporanHarianTS.jasper").openStream();
+            InputStream fileName = new URL(getReportsUrl("LaporanHarianTS.jasper")).openStream();
             String sql =
                     "select * from " +
                     "(select ankem.*, petak.kategori, petak.luas_petak, " +
@@ -328,7 +332,8 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
     public JasperPrint viewDataPetak(String kodePetak) {
         JasperPrint jp = null;
         try (Connection conn = DB.getConn()){
-            InputStream fileName = new URL("http://apps.bcn.web.id/reports/ViewPetakKebun.jasper").openStream();
+            //InputStream fileName = new URL("http://apps.bcn.web.id/reports/ViewPetakKebun.jasper").openStream();
+            InputStream fileName = new URL(getReportsUrl("ViewPetakKebun.jasper")).openStream();
             Map map = new HashMap();
             map.put("kode_petak", kodePetak);
             jp = JasperFillManager.fillReport(fileName, map, conn);
@@ -338,6 +343,66 @@ public class ReportsPrintingDAOSQL implements ReportsPrintingDAO{
         } catch (IOException | JRException ex) {
             Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
             alert.showErrorAlert("Error executing viewDataPetak method!\nError code :\n" + ex.toString());
+        }
+        return jp;
+    }
+
+    @Override
+    public JasperPrint viewDailyCS(Date tglTimbang) {
+        JasperPrint jp = null;
+        try {
+            InputStream fileName = new URL(getReportsUrl("DailyReportCSDetail.jasper")).openStream();
+            Map map = new HashMap();
+            InputStream jsonSource = new URL("http://optanaman:optanaman@simpgbuma.ptpn7.com/index.php/apibuma/datacs/?tgl=" + tglTimbang).openStream();
+            //InputStream jsonSource = new URL(getReportsUrl("14092019.json")).openStream();
+            map.put(JsonQLQueryExecuterFactory.JSON_INPUT_STREAM,jsonSource);
+            jp = JasperFillManager.fillReport(fileName, map);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing viewDailyCS method!\nError code :\n" + ex.toString());
+        } catch (IOException | JRException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing viewDailyCS method!\nError code :\n" + ex.toString());
+        }
+        return jp;
+    }
+
+    @Override
+    public String getReportsUrl(String fileName) {
+        String result = "";
+        try (Connection conn = DB.getConn()){
+            String sql = "select url from tbl_redirect_file where file_name = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, fileName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                result = rs.getString("url");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    @Override
+    public JasperPrint viewCSToDate(Date tgl_1, Date tgl_2) {
+        JasperPrint jp = null;
+        try {
+            InputStream fileName = new URL(getReportsUrl("CSDailyReport_todate.jasper")).openStream();
+            Map map = new HashMap();
+            InputStream jsonSource = new URL("http://optanaman:optanaman@simpgbuma.ptpn7.com/index.php/apibuma/datacs_sd/?tgl_1=" + 
+                    tgl_1 + "&tgl_2=" + tgl_2).openStream();
+            //InputStream jsonSource = new URL(getReportsUrl("14092019.json")).openStream();
+            map.put(JsonQLQueryExecuterFactory.JSON_INPUT_STREAM,jsonSource);
+            map.put("tgl_1", tgl_1);
+            map.put("tgl_2", tgl_2);
+            jp = JasperFillManager.fillReport(fileName, map);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing viewDailyCS method!\nError code :\n" + ex.toString());
+        } catch (IOException | JRException ex) {
+            Logger.getLogger(ReportsPrintingDAOSQL.class.getName()).log(Level.SEVERE, null, ex);
+            alert.showErrorAlert("Error executing viewDailyCS method!\nError code :\n" + ex.toString());
         }
         return jp;
     }
